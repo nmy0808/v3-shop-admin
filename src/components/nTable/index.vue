@@ -70,7 +70,7 @@ const props = defineProps({
 	}
 })
 
-const emit = defineEmits(['confirm', 'selectionChange', 'update:pagesize', 'update:currentPage', 'dragSort'])
+const emit = defineEmits(['confirm', 'selectionChange', 'update:pageSize', 'update:currentPage', 'dragSort'])
 
 
 const dataClone = ref([])
@@ -219,7 +219,7 @@ defineExpose({
 	<div class="page-box" :style="{ justifyContent: pageAlignCalc }">
 		<el-pagination v-if="showPage && total > pageSize" @size-change="handleSizeChange"
 			@current-change="handleCurrentChange" :page-sizes="pageSizes" :current-page="currentPage" :page-size="pageSize"
-			:layout="pageLayout" :total="total">
+			:layout="pageLayout" :total="total" >
 		</el-pagination>
 	</div>
 </template>

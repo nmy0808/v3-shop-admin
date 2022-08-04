@@ -31,6 +31,7 @@ import NTable from '@/components/nTable/index.vue'
 import NDrawer from '@/components/nDrawer/index.vue'
 import NDrawerForm from '@/components/nDrawerForm/index.vue'
 import NSearchHeader from '@/components/nSearchHeader/index.vue'
+import NActionHeader from '@/components/nActionHeader/index.vue'
 
 import auth from './directives/auth'
 import role from './directives/role'
@@ -78,6 +79,7 @@ export default {
 		app.component('NDrawer', NDrawer);
 		app.component('NDrawerForm', NDrawerForm);
 		app.component('NSearchHeader', NSearchHeader);
+		app.component('NActionHeader', NActionHeader);
 		
 
 		//注册全局指令

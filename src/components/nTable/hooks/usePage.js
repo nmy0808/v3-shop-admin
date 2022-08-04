@@ -1,7 +1,7 @@
 
 export default function ({ props, emit }) {
   const handleSizeChange = (value) => {
-    emit('update:pagesize', value)
+    emit('update:pageSize', value)
     props.getData && props.getData()
   }
   const handleCurrentChange = (value) => {
