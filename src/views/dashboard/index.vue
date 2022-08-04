@@ -1,13 +1,12 @@
 <template>
-	<el-card shadow="never">
-		<NSelect></NSelect>
-	</el-card>
+	<NContainer>
+		<NSearchHeader :showFold="true"></NSearchHeader>
+	</NContainer>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import NSelect from '@/components/nImageSelect/index.vue'
-
+import NContainer from '@/components/nContainer/index.vue'
 </script>
 
 <style scoped lang="scss">

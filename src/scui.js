@@ -23,6 +23,15 @@ import { permission, rolePermission } from './utils/permission'
 // import scStatusIndicator from './components/scMini/scStatusIndicator'
 // import scTrend from './components/scMini/scTrend'
 
+import NContainer from '@/components/nContainer/index.vue'
+import NIcon from '@/components/nIcon/index.vue'
+import NForm from '@/components/nForm/index.vue'
+import NImage from '@/components/nImage/index.vue'
+import NTable from '@/components/nTable/index.vue'
+import NDrawer from '@/components/nDrawer/index.vue'
+import NDrawerForm from '@/components/nDrawerForm/index.vue'
+import NSearchHeader from '@/components/nSearchHeader/index.vue'
+
 import auth from './directives/auth'
 import role from './directives/role'
 import time from './directives/time'
@@ -60,6 +69,16 @@ export default {
 		// app.component('scQrCode', scQrCode);
 		// app.component('scStatusIndicator', scStatusIndicator);
 		// app.component('scTrend', scTrend);
+		
+		app.component('NContainer', NContainer);
+		app.component('NIcon', NIcon);
+		app.component('NForm', NForm);
+		app.component('NImage', NImage);
+		app.component('NTable', NTable);
+		app.component('NDrawer', NDrawer);
+		app.component('NDrawerForm', NDrawerForm);
+		app.component('NSearchHeader', NSearchHeader);
+		
 
 		//注册全局指令
 		app.directive('auth', auth)
