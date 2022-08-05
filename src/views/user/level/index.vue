@@ -80,7 +80,6 @@ const {
 	total,
 	handleStatusChange,
 	getListData,
-	handleSearch,
 	handleDelete
 } = useUserList()
 
