@@ -2,7 +2,7 @@
 	<NContainer>
 		<NSearchHeader :schema="searchSchema" :showFold="true" @search="handleSearch"></NSearchHeader>
 		<NActionHeader @create="handleCreate" @refresh="getUserListData" />
-		<NTable border ref="tableRef" :data="list" :options="tableOptions" :dragSort="false" :loading="loading"
+		<NTable  table-layout="auto"	 ref="tableRef" :data="list" :options="tableOptions" :dragSort="false" :loading="loading"
 			:total="total" v-model:currentPage="pageSearch.page" v-model:pageSize="pageSearch.limit">
 			<!-- 会员 -->
 			<template #user="{ row }">
@@ -17,6 +17,7 @@
 			<!-- 状态 -->
 			<template #status="{ row }">
 				<el-switch v-model="row.status" :active-value="1" :inactive-value="0" :loading="row.statusLoading"
+					size="small"
 					@click="handleStatusChange(row)" />
 			</template>
 			<template #action="{ row }">
@@ -32,7 +33,6 @@ import { ref } from 'vue'
 import { searchSchema } from './config/searchSchema'
 import { tableOptions } from './config/tableOptions'
 import { userListApi, userStatusApi, userDeleteApi } from '@/api/model/user'
-import defaultAvatar from '/public/img/avatar3.gif'
 import ActionDrawer from './components/ActionDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 
