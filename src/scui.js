@@ -27,6 +27,7 @@ import NContainer from '@/components/nContainer/index.vue'
 import NIcon from '@/components/nIcon/index.vue'
 import NForm from '@/components/nForm/index.vue'
 import NImage from '@/components/nImage/index.vue'
+import NAvatar from '@/components/nAvatar/index.vue'
 import NTable from '@/components/nTable/index.vue'
 import NDrawer from '@/components/nDrawer/index.vue'
 import NDrawerForm from '@/components/nDrawerForm/index.vue'
@@ -75,6 +76,7 @@ export default {
 		app.component('NIcon', NIcon);
 		app.component('NForm', NForm);
 		app.component('NImage', NImage);
+		app.component('NAvatar', NAvatar);
 		app.component('NTable', NTable);
 		app.component('NDrawer', NDrawer);
 		app.component('NDrawerForm', NDrawerForm);

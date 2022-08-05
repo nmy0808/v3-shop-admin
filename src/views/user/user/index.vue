@@ -7,7 +7,7 @@
 			<!-- 会员 -->
 			<template #user="{ row }">
 				<div class="flex">
-					<NImage class="w-14 h-14 rounded-full" :src="row.avatar || defaultAvatar" fit="cover"></NImage>
+					<NAvatar :src="row.avatar"></NAvatar>
 					<div class="ml-4">
 						<div class="text-base font-semibold">{{ row.username || row.nickname }}</div>
 						<div class="opacity-60">ID: {{ row.id }}</div>
@@ -28,16 +28,15 @@
 	</NContainer>
 </template>
 <script>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { searchSchema } from './config/searchSchema'
 import { tableOptions } from './config/tableOptions'
 import { userListApi, userStatusApi, userDeleteApi } from '@/api/model/user'
-import { notification, confirm } from '@/libs/elementPlus'
 import defaultAvatar from '/public/img/avatar3.gif'
 import ActionDrawer from './components/ActionDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 
-function useUserList() {
+const useUserList = () => {
 	const listSearchParams = ref({
 		keyword: '',
 		user_level_id: ''
@@ -45,7 +44,8 @@ function useUserList() {
 
 	const { loading, list, pageSearch, total, getListData, deleteData, statusData } =
 		usePageAction({
-			listDataApi: userListApi, listSearchParams,
+			listSearchParams,
+			listDataApi: userListApi, 
 			deleteDataApi: userDeleteApi,
 			statusDataApi: userStatusApi
 		})
@@ -74,9 +74,9 @@ function useUserList() {
 	}
 }
 
-function useAction() {
+const useAction = () => {
 	const actionDrawerRef = ref(null)
-	
+
 	const handleCreate = () => {
 		actionDrawerRef.value.open({ title: '新增' })
 	}
@@ -108,7 +108,7 @@ const {
 
 getUserListData()
 
-const { actionDrawerRef, handleCreate, handleEdit } = useAction(getUserListData)
+const { actionDrawerRef, handleCreate, handleEdit } = useAction()
 
 </script>
 
