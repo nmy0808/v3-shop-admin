@@ -74,7 +74,7 @@ router.beforeEach(async (to, from, next) => {
 		// 	return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
 		// })
 		const menu = [...userRoutes, ...getAsyncMenus()];
-		console.log(menu, "??")
+		console.log(menu, "??");
 		var menuRouter = filterAsyncRouter(menu);
 		menuRouter = flatAsyncRoutes(menuRouter);
 		menuRouter.forEach((item) => {
@@ -120,22 +120,24 @@ router.sc_getMenu = () => {
 function filterAsyncRouter(routerMap) {
 	const accessedRouters = [];
 	routerMap.forEach((item) => {
-		item.meta = item.meta ? item.meta : {};
-		//处理外部链接特殊路由
-		if (item.meta.type == "iframe") {
-			item.meta.url = item.path;
-			item.path = `/i/${item.name}`;
+		if (item) {
+			item.meta = item.meta ? item.meta : {};
+			//处理外部链接特殊路由
+			if (item.meta.type == "iframe") {
+				item.meta.url = item.path;
+				item.path = `/i/${item.name}`;
+			}
+			//MAP转路由对象
+			const route = {
+				path: item.path,
+				name: item.name,
+				meta: item.meta,
+				redirect: item.redirect,
+				children: item.children ? filterAsyncRouter(item.children) : null,
+				component: loadComponent(item.component),
+			};
+			accessedRouters.push(route);
 		}
-		//MAP转路由对象
-		var route = {
-			path: item.path,
-			name: item.name,
-			meta: item.meta,
-			redirect: item.redirect,
-			children: item.children ? filterAsyncRouter(item.children) : null,
-			component: loadComponent(item.component),
-		};
-		accessedRouters.push(route);
 	});
 	return accessedRouters;
 }
@@ -209,6 +211,10 @@ function parseMenusApiToConfig(allRoutes, apiMenus) {
 		obj.path = apiMenu.frontpath;
 		// 是否是顶级路由
 		const isParentRoute = !!(apiMenu.child && apiMenu.child.length);
+		if (!isParentRoute && !configMenu) {
+			// console.log(apiMenu , configMenu , "!")
+			return null;
+		}
 		obj.path = isParentRoute ? apiMenu.frontpath : configMenu.path;
 		obj.name = isParentRoute
 			? apiMenu.frontpath.replaceAll("/", "")
@@ -232,7 +238,7 @@ function parseMenusApiToConfig(allRoutes, apiMenus) {
 		const route = deep(apiMenu);
 		resultRoutes.push(route);
 	});
-	return resultRoutes;
+	return resultRoutes.filter((it) => it);
 }
 
 function getAsyncMenus() {

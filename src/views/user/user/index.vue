@@ -1,7 +1,7 @@
 <template>
 	<NContainer>
 		<NSearchHeader :schema="searchSchema" :showFold="true" @search="handleSearch"></NSearchHeader>
-		<NActionHeader @create="handleCreate" @refresh="getUserListData"/>
+		<NActionHeader @create="handleCreate" @refresh="getUserListData" />
 		<NTable border ref="tableRef" :data="list" :options="tableOptions" :dragSort="false" :loading="loading"
 			:total="total" v-model:currentPage="pageSearch.page" v-model:pageSize="pageSearch.limit">
 			<!-- 会员 -->
@@ -33,90 +33,61 @@ import { searchSchema } from './config/searchSchema'
 import { tableOptions } from './config/tableOptions'
 import { userListApi, userStatusApi, userDeleteApi } from '@/api/model/user'
 import { notification, confirm } from '@/libs/elementPlus'
-import defaultAvatar from '@/assets/imgs/default.jpeg'
-import ActionDrawer from './components//ActionDrawer.vue'
+import defaultAvatar from '/public/img/avatar3.gif'
+import ActionDrawer from './components/ActionDrawer.vue'
+import { usePageAction } from '@/hooks/usePageAction'
 
-function useUserList({searchSearch}) {
-	const loading = ref(false)
-
-	const list = ref([])
-
-	const pageSearch = ref({
-		page: 1,
-		limit: 10
+function useUserList() {
+	const listSearchParams = ref({
+		keyword: '',
+		user_level_id: ''
 	})
 
-	const total = ref(0)
-
-	const getUserListData = async () => {
-		try {
-			loading.value = true
-			const { data } = await userListApi({
-				page: pageSearch.value.page,
-				limit: pageSearch.value.limit,
-				keyword:searchSearch.value.keyword,
-				user_level_id:searchSearch.value.user_level_id
-			})
-			list.value = data.list
-			total.value = data.totalCount
-		}
-		finally {
-			loading.value = false
-		}
-	}
+	const { loading, list, pageSearch, total, getListData, deleteData, statusData } =
+		usePageAction({
+			listDataApi: userListApi, listSearchParams,
+			deleteDataApi: userDeleteApi,
+			statusDataApi: userStatusApi
+		})
 
 	const handleStatusChange = async (row) => {
-		try {
-			row.statusLoading = true
-			await userStatusApi({ id: row.id, status: row.status })
-			notification({ message: row.status ? '已开启' : '已关闭', type: row.status ? 'success' : 'error' })
-		}
-		catch (error) {
-			const status = row.status
-			if (status === 1) {
-				row.status = 0
-			} else {
-				row.status = 1
-			}
-		}
-		finally {
-			row.statusLoading = false
-		}
+		statusData({
+			params: { id: row.id, status: row.status },
+			row
+		})
 	}
 
-	watch(() => pageSearch, getUserListData, { deep: true })
+	const handleSearch = (model) => {
+		listSearchParams.value = model
+		getListData()
+	}
 
 	return {
 		list,
 		loading,
 		pageSearch,
 		total,
-		getUserListData,
-		handleStatusChange
+		getUserListData: getListData,
+		handleStatusChange,
+		handleSearch,
+		handleDelete: deleteData
 	}
 }
 
-function useAction(getUserListData) {
+function useAction() {
 	const actionDrawerRef = ref(null)
+	
 	const handleCreate = () => {
 		actionDrawerRef.value.open({ title: '新增' })
 	}
 	const handleEdit = (data) => {
 		actionDrawerRef.value.open({ title: '编辑', data })
 	}
-	const handleDelete = async (data) => {
-		const flag = await confirm({ messgae: '确定删除?' })
-		if (flag) {
-			await userDeleteApi({ id: data.id })
-			await getUserListData()
-			notification({ message: '已删除', type: 'success' })
-		}
-	}
+
 	return {
 		actionDrawerRef,
 		handleCreate,
 		handleEdit,
-		handleDelete
 	}
 }
 
@@ -124,29 +95,20 @@ function useAction(getUserListData) {
 
 <script setup>
 
-const searchSearch = ref({
-	keyword: '',
-	user_level_id:''
-})
-const handleSearch = (model) => {
-	searchSearch.value = model
-	getUserListData()
-}
-
 const {
 	list,
 	loading,
 	pageSearch,
 	total,
 	handleStatusChange,
-	getUserListData
-} = useUserList({
-	searchSearch
-})
+	getUserListData,
+	handleSearch,
+	handleDelete
+} = useUserList()
 
 getUserListData()
 
-const { actionDrawerRef, handleCreate, handleEdit, handleDelete } = useAction(getUserListData)
+const { actionDrawerRef, handleCreate, handleEdit } = useAction(getUserListData)
 
 </script>
 

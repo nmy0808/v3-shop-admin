@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { userLevelListApi } from '@/api/model/userLevel'
+import { uploadImageApi } from '@/api/model/upload'
 import { getRequiredRule, usernameRule, nicknameRule, passwordRule, emailRule, phoneRule } from '@/utils/rules'
 
 export const getActionSchema = ()=>{
@@ -45,7 +46,8 @@ export const getActionSchema = ()=>{
 			customUpload: async (file) => {
 				// 1.自定义上传请求
 				// 2.返回图片url即可
-				return 'https://images.unsplash.com/photo-1657299156185-6f5de6da0996?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'
+				const {data} =await uploadImageApi({img: [file]})
+				return data.url
 			}
 		},
 		{
@@ -57,7 +59,7 @@ export const getActionSchema = ()=>{
 			attrs: {
 				clearable: true
 			},
-			children: [], 
+			children: [],
 			rules: getRequiredRule('请选择会员等级')
 		},
 		{
@@ -95,9 +97,9 @@ export const getActionSchema = ()=>{
 	])
 
 		// 获取会员等级列表数据
-		const getUserLevelListData = async () => {
+	const getUserLevelListData = async () => {
 			const { data } = await userLevelListApi({ page: 1 })
-			actionSchema.value[4].children = data.list.map(it => {
+			actionSchema.value.find(it => it.prop === 'user_level_id').children = data.list.map(it => {
 				return {
 					type: 'option',
 					value: it.id,
@@ -105,7 +107,7 @@ export const getActionSchema = ()=>{
 				}
 			})
 		}
-		getUserLevelListData()
+	getUserLevelListData()
 	return actionSchema
 }
 

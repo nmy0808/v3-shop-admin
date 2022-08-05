@@ -1,6 +1,6 @@
 <template>
 	<div class="">
-		<NDrawerForm v-model:visible="isVisible" :title="currentTitle" :schema="actionSchema"
+		<NDrawerForm v-model:visible="isVisible" :title="currentTitle" :schema="actionSchema" :loading="loading"
 			:formOptions="{ labelWidth: '100px' }" @submit="handleSubmit"></NDrawerForm>
 	</div>
 </template>
@@ -9,7 +9,7 @@
 import { ref, watch } from 'vue'
 import { getActionSchema } from './config/actionSchema'
 import { userCreateApi, userEditApi } from '@/api/model/user'
-import { notification } from '@/libs/elementPlus'
+import { usePageAction } from '@/hooks/usePageAction'
 
 const props = defineProps({
 	getListData: {
@@ -18,57 +18,66 @@ const props = defineProps({
 	}
 })
 
+const { createData, updateData, loading } = usePageAction({
+	createDataApi: userCreateApi,
+	updateDataApi: userEditApi
+})
+
 const isVisible = ref(false)
-const mergeData = (data) => {
-	actionSchema.value.forEach(item => {
-		const prop = item.prop
-		prop && (item.value = data[prop])
-	})
-}
+
+
 const actionSchema = ref([])
 const currentTitle = ref('')
 
 // 当前编辑对象 (新增状态为null)
 let currentEditData = null
 
+// 关闭时重置
 watch(isVisible, () => {
 	if (!isVisible.value) {
 		currentEditData = null
 	}
 })
 
+const mergeData = (data) => {
+	actionSchema.value.forEach(item => {
+		const prop = item.prop
+		prop && (item.value = data[prop])
+	})
+}
+
 const open = ({ title, data }) => {
 	actionSchema.value = getActionSchema().value
 	currentTitle.value = title
 	if (data) {
 		currentEditData = data
-		const index = actionSchema.value.findIndex(it=>it.prop === 'password')
-		actionSchema.value.splice(index,1)
+		const index = actionSchema.value.findIndex(it => it.prop === 'password')
+		actionSchema.value.splice(index, 1)
 		mergeData(data)
 	}
 	isVisible.value = true
 }
 
-const loading = ref(false)
-
 const handleSubmit = async (model) => {
-	loading.value = true
-	try {
-		if (currentEditData) {
-			await userEditApi({...model, id: currentEditData.id})
-			notification({ message: '编辑完成', type: 'success' })
-		} else {
-			await userCreateApi(model)
-			notification({ message: '新增成功', type: 'success' })
-		}
-		isVisible.value = false
-		props.getListData && props.getListData()
+	if (currentEditData) {
+		await updateData({
+			params: { ...model, id: currentEditData.id },
+			callback: () => {
+				isVisible.value = false
+				props.getListData && props.getListData()
+			}
+		})
+	} else {
+		await createData({
+			params: model,
+			callback: () => {
+				isVisible.value = false
+				props.getListData && props.getListData()
+			}
+		})
 	}
-	finally {
-		loading.value = false
-	}
-
 }
+
 defineExpose({
 	open
 })

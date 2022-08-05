@@ -277,7 +277,8 @@
 			filterUrl(map){
 				var newMap = []
 				map && map.forEach(item => {
-					item.meta = item.meta?item.meta:{};
+					if(item){
+						item.meta = item.meta?item.meta:{};
 					//处理隐藏
 					if(item.meta.hidden || item.meta.type=="button"){
 						return false
@@ -291,6 +292,8 @@
 						item.children = this.filterUrl(item.children)
 					}
 					newMap.push(item)
+					}
+					
 				})
 				return newMap;
 			},
