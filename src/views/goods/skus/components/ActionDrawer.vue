@@ -9,7 +9,7 @@
 		<el-form
 			ref="formRef"
 			:model="formData"
-			:rules="rules"
+			:rules="actionRule"
 			label-width="80px"
 			size="default"
 		>
@@ -40,8 +40,10 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import actionRule from './config/actionRules'
 import { skuCreateApi, skuEditApi } from '@/api/model/skus'
 import { notification } from '@/libs/elementPlus/index.js';
+import cloneDeep from 'lodash/cloneDeep'
 
 const props = defineProps({
 	getListData: {
@@ -56,8 +58,6 @@ const currentTitle = ref('')
 
 // 当前编辑对象 (新增状态为null)
 
-
-const rules = {}
 const formData = ref({
 	name:'', 
 	order: 0,
@@ -69,7 +69,7 @@ const loading = ref(false)
 const open = ({ title, data }) => {
 	currentTitle.value = title
 	if (data) {
-		formData.value = data
+		formData.value = cloneDeep(data)
 		skuValues.value = data.default.split(',')
 	}
 	isVisible.value = true
@@ -98,6 +98,9 @@ const handleSubmit = async () => {
 const handleCancel = ()=>{
 	isVisible.value = false
 }
+watch(skuValues,()=>{
+	formData.value.default = skuValues.value.join(',')
+})
 // 关闭时重置
 watch(isVisible, () => {
 	if (!isVisible.value) {
