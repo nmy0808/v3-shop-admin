@@ -6,7 +6,7 @@ export const couponCreateApi = async (data) => {
 	return await http.post(`${config.API_URL}/coupon`, data);
 };
 // 修改优惠券
-export const couponUpdateApi = async (data) => {
+export const couponEditApi = async (data) => {
 	return await http.post(`${config.API_URL}/coupon/${data.id}`, data);
 };
 // 优惠券列表
