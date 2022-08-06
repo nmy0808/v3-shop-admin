@@ -9,6 +9,7 @@
 			:props="defaultProps" 
 			show-checkbox
 			@check="handleCheck"
+			:default-expanded-keys="defaultExpandedKeys"
 			:check-strictly="false"
 			:height="height" >
 			<template #="{node, data}">
@@ -37,6 +38,7 @@ const props = defineProps({
 })
 
 const height = computed(()=>{
+	console.log('w')
 	return window.innerHeight
 })
 
@@ -48,11 +50,12 @@ const defaultProps = {
 const loading = ref(false)
 const submitLoading = ref(false)
 const ruleList = ref([])
-
+const defaultExpandedKeys = ref([])
 const getRuleListData = async () => {
 	loading.value = true
 	const { data } = await ruleListApi()
 	ruleList.value = data.list
+	defaultExpandedKeys.value = data.list.map(it => it.id)
 	loading.value = false
 }
 
