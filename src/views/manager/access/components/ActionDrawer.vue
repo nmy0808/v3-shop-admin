@@ -29,8 +29,14 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="菜单图标" prop="icon" v-if="formData.menu === 1">
-				<el-select v-model="formData.icon" placeholder="请选择菜单图标">
+				<el-select v-model="formData.icon" filterable placeholder="请选择菜单图标">
 					<el-option v-for="item in iconOptions" :key="item.label" :label="item.label" :value="item.value">
+						<div>
+								<el-icon size="22" class="mr-2">
+									<Component :is="`el-icon-${item.label}`"></Component>
+								</el-icon>
+								{{item.label}}
+						</div>
 					</el-option>
 				</el-select>
 				<el-icon size="22" class="ml-2">

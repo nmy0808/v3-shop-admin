@@ -16,7 +16,7 @@
 				<el-button class="ml-3"  :disabled="data.menu === 0" :type="data.menu === 0 ? 'info' : 'primary'" size="small"
 					text @click="handlePushRule(data)">增加</el-button>
 				<el-button class="!ml-0" type="primary" size="small" text @click="handleEdit(data)">修改</el-button>
-				<el-button class="!ml-0" type="primary" size="small" text @click="handleDelete(data)">删除</el-button>
+				<el-button class="!ml-0" type="danger" size="small" text @click="handleDelete(data)">删除</el-button>
 			</template>
 		</el-tree>
 		<ActionDrawer ref="actionDrawerRef" :ruleList="list" :getListData="getListData" />
@@ -71,5 +71,8 @@ const handleEdit = (data) => {
 </script>
 
 <style scoped lang="scss">
+:deep(.el-tree-node__content) {
+	@apply py-6;
+}
 </style>
 
