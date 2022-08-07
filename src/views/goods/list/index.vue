@@ -1,12 +1,14 @@
 <template>
-  <div class="">list</div>
+	<div class="">
+		list
+	</div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 
 </script>
 
 <style scoped lang="scss">
-
 </style>
 

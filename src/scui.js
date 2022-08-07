@@ -34,6 +34,9 @@ import NDrawerForm from '@/components/nDrawerForm/index.vue'
 import NSearchHeader from '@/components/nSearchHeader/index.vue'
 import NActionHeader from '@/components/nActionHeader/index.vue'
 import NEditTag from '@/components/nEditTag/index.vue'
+import NImageSelect from '@/components/nImageSelect/index.vue'
+import NDialog from '@/components/nDialog/index.vue'
+import NSelectImageDialog from '@/components/nSelectImageDialog/index.vue'
 
 import auth from './directives/auth'
 import role from './directives/role'
@@ -84,6 +87,9 @@ export default {
 		app.component('NSearchHeader', NSearchHeader);
 		app.component('NActionHeader', NActionHeader);
 		app.component('NEditTag', NEditTag);
+		app.component('NImageSelect', NImageSelect);
+		app.component('NDialog', NDialog);
+		app.component('NSelectImageDialog', NSelectImageDialog);
 		
 
 		//注册全局指令

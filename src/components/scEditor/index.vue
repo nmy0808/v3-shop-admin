@@ -1,6 +1,7 @@
 <template>
 	<div class="sceditor">
 		<Editor v-model="contentValue" :init="init" :disabled="disabled" :placeholder="placeholder" @onClick="onClick" />
+		<NSelectImageDialog ref="selectImageDialogRef"></NSelectImageDialog>
 	</div>
 </template>
 
@@ -40,7 +41,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 300,
+			default: 500,
 		},
 		disabled: {
 			type: Boolean,
@@ -58,7 +59,7 @@ export default {
 			type: [String, Array],
 			default: 'undo redo |  forecolor backcolor bold italic underline strikethrough link | blocks fontfamily fontsize | \
 					alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | pagebreak | \
-					image media table template preview | code selectall'
+					image media table template preview | code selectall imageSelect'
 		},
 		templates: {
 			type: Array,
@@ -68,6 +69,7 @@ export default {
 	data() {
 		return {
 			init: {
+				that: () => this,
 				language_url: 'tinymce/langs/zh_CN.js',
 				language: 'zh_CN',
 				skin_url: 'tinymce/skins/ui/oxide',
@@ -103,17 +105,30 @@ export default {
 								.then(imgUrl => {
 									resolve(imgUrl)
 								})
-						}else{
+						} else {
 							reject("上传失败")
 						}
-
 					})
 				},
 				setup: function (editor) {
 					editor.on('init', function () {
 						this.getBody().style.fontSize = '14px';
 					})
-
+					// 增加图库选择菜单项目
+					editor.ui.registry.addButton('imageSelect', {
+						tooltip: '打开图库',
+						icon: 'image',
+						onAction: () => {
+							this.that().$refs.selectImageDialogRef.open((imgs) => {
+								const htmlList = imgs.map(img => {
+									const url = img.url
+									return `<img src='${url}'>`
+								})
+								const html = htmlList.join("")
+								editor.insertContent(html)
+							})
+						}
+					})
 				}
 			},
 			contentValue: this.modelValue
@@ -133,6 +148,15 @@ export default {
 	methods: {
 		onClick(e) {
 			this.$emit('onClick', e, tinymce)
+		},
+		selectImageAction(editor) {
+			this.$refs.selectImageDialogRef.open((imgs) => {
+				const html = imgs.map(img => {
+					const url = img
+					return `<img src='${url}}'>`
+				})
+				editor.insertContent(html)
+			})
 		}
 	}
 }

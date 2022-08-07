@@ -15,19 +15,18 @@
 				</div>
 			</el-scrollbar>
 		</el-card>
+
 		<div class="select-content" v-loading="imageLoading">
-			<el-card 
-				class="item"
-				:class="{selected: imageSelected?.id === item.id}"
-			 	@click="handleSelectImage(item)"
-				:body-style="{ padding: 0 }" shadow="never" v-for="(item, index) in imageList" :key="index">
-				<NImage class="item-image" :src="item.url" lazy ></NImage>
+			<el-card class="item" :class="{ selected: imageSelected.find(it => it.id === item.id) }"
+				@click="handleSelectImage(item)" :body-style="{ padding: 0 }" shadow="never" v-for="(item, index) in imageList"
+				:key="index">
+				<NImage class="item-image" :src="item.url" lazy></NImage>
 				<PreviewImage v-model="imageVisible" :src="imagePreviewUrl"></PreviewImage>
 				<div class="item-mask">
 					{{ item.name }}
 				</div>
 				<div class="item-action">
-					<el-link class="item-link" type="primary" size="mini" @click="handlePreviewImage(item)">浏览</el-link>
+					<el-link class="item-link pr-2" type="primary" size="mini" @click="handlePreviewImage(item)">浏览</el-link>
 					<el-link class="item-link" type="primary" size="mini" @click="handleRenameImage(item)">重命名</el-link>
 					<el-link class="item-link delete" type="danger" size="mini" @click="handleRemoveImage(item)">删除</el-link>
 				</div>
@@ -38,10 +37,11 @@
 	</div>
 	<div class="page-wrap">
 		<div class="slider-page">
-			<el-button type="primary" plain icon="el-icon-arrowLeft" @click="handleMenuPrevChange(-1)" :disabled="menuListPage.page === 1">
+			<el-button type="primary" plain icon="el-icon-arrowLeft" @click="handleMenuPrevChange(-1)"
+				:disabled="menuListPage.page === 1">
 			</el-button>
 			<el-button type="primary" plain icon="el-icon-arrowRight" @click="handleMenuNextChange(1)" :disabled="menuListPage.page ===
-				 Math.ceil( menusTotal/menuListPage.limit)">
+			Math.ceil(menusTotal / menuListPage.limit)">
 			</el-button>
 		</div>
 		<el-pagination :page-sizes="[10, 20, 30]" v-model:current-page="imageListPage.page"
@@ -66,6 +66,10 @@ import cloneDeep from 'lodash/cloneDeep'
 import { confirm, notification, prompt } from '@/libs/elementPlus'
 
 const props = defineProps({
+	// selectedImages: { // 当前选中的
+	// 	type: Array,
+	// 	default: () => []
+	// },
 	isSelect: { // 开启选择图片
 		type: Boolean,
 		default: false
@@ -73,12 +77,24 @@ const props = defineProps({
 	multiple: { // 多选图片
 		type: Boolean,
 		default: false
+	},
+	maxSelectSize: {
+		type: Number,
+		default: 6
+	},
+	imagePageLimit: { // 图片列表一次请求多少个数据
+		type: Number,
+		default: 10
 	}
 })
+
+const emit = defineEmits(['select'])
+
 const menuListPage = ref({
 	page: 1,
 	limit: 10
 })
+
 const activeMenuId = ref(null)
 const menuList = ref([])
 const menusTotal = ref(0)
@@ -144,7 +160,7 @@ const handleCreateImage = () => {
 
 const imageListPage = ref({
 	page: 1,
-	limit: 10
+	limit: props.imagePageLimit
 })
 const imageList = ref([])
 const imageListTotal = ref(0)
@@ -177,40 +193,61 @@ const handleMenuClick = (item) => {
 
 const imageVisible = ref(false)
 const imagePreviewUrl = ref('')
-const handlePreviewImage = (imageItem)=>{
+const handlePreviewImage = (imageItem) => {
 	imagePreviewUrl.value = imageItem.url
 	imageVisible.value = true
 }
 
-const handleRenameImage = async (imageItem)=>{
+const handleRenameImage = async (imageItem) => {
 	try {
-		const value = await prompt({message: '重命名', inputValue: imageItem.name})
-		await renameImageApi({id: imageItem.id, name: value})
+		const value = await prompt({ message: '重命名', inputValue: imageItem.name })
+		await renameImageApi({ id: imageItem.id, name: value })
 		await getImageListData()
-		notification({message: '重命名完成', type: 'success'})
+		notification({ message: '重命名完成', type: 'success' })
 	}
-	catch (error) {}
+	catch (error) { }
 }
-const handleRemoveImage = async (imageItem)=>{
+const handleRemoveImage = async (imageItem) => {
 	try {
-		const flag = await confirm({message: '确定删除吗?'})
-		if(flag){
-			await removeImageByIdApi({ids: [imageItem.id]})
+		const flag = await confirm({ message: '确定删除吗?' })
+		if (flag) {
+			await removeImageByIdApi({ ids: [imageItem.id] })
 			await getImageListData()
-			notification({message: '删除成功', type: 'success'})
+			notification({ message: '删除成功', type: 'success' })
 		}
 	}
-	catch (error) {}
+	catch (error) { }
 }
 // 选择图片, 并判断是否多选
-const handleSelectImage = (imageItem)=>{
-	if(!props.isSelect) return
-	if(props.multiple){
-		imageSelected.value.push(imageItem)
-	}else{
-		imageSelected.value = [imageItem]
+const handleSelectImage = (imageItem) => {
+	if (!props.isSelect) return
+	const index = imageSelected.value.findIndex(it => it.id === imageItem.id)
+	// 如果当前是选中
+	if (index === -1) {
+		if (props.maxSelectSize === imageSelected.value.length) {
+			notification({ message: `最多只能选择${props.maxSelectSize}张图片`, type: 'warning' })
+			return
+		}
+		if (props.multiple) {
+			imageSelected.value.push(imageItem)
+		} else {
+			imageSelected.value = [imageItem]
+		}
+	} else {
+		// 如果当前是取消选中
+		imageSelected.value.splice(index, 1)
 	}
+	emit('select', [...imageSelected.value])
+	// emit('update:selectedImages', [...imageSelected.value])
 }
+
+
+// 清空选中图片
+const clearSelected = ()=>{
+	imageSelected.value = []
+}
+
+defineExpose({ clearSelected })
 
 </script>
 
@@ -218,6 +255,7 @@ const handleSelectImage = (imageItem)=>{
 .header {
 	margin-bottom: 10px;
 }
+
 .content {
 	display: flex;
 
@@ -225,6 +263,7 @@ const handleSelectImage = (imageItem)=>{
 		width: 200px;
 		height: 448px;
 		margin-bottom: 20px;
+
 		.slider-item {
 			display: flex;
 			align-items: center;
@@ -234,6 +273,7 @@ const handleSelectImage = (imageItem)=>{
 			user-select: none;
 			transition: all 0.3s;
 			font-size: 14px;
+
 			&:hover {
 				color: var(--el-color-primary);
 			}
@@ -242,7 +282,7 @@ const handleSelectImage = (imageItem)=>{
 				background: #edf4ff;
 				color: var(--el-color-primary);
 			}
-			
+
 		}
 	}
 
@@ -260,8 +300,9 @@ const handleSelectImage = (imageItem)=>{
 			cursor: pointer;
 
 			&.selected {
-				outline: 2px solid var(--el-color-primary);
+				outline: 1px solid var(--el-color-primary);
 			}
+
 			.item-image {
 				width: 100%;
 				height: 170px;
