@@ -152,8 +152,8 @@ export default {
 		selectImageAction(editor) {
 			this.$refs.selectImageDialogRef.open((imgs) => {
 				const html = imgs.map(img => {
-					const url = img
-					return `<img src='${url}}'>`
+					const eImg = new Image(img)
+					return eImg
 				})
 				editor.insertContent(html)
 			})

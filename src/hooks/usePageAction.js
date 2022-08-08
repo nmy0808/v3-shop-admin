@@ -29,6 +29,7 @@ export const usePageAction = ({
 			const { data } = await listDataApi(params);
 			list.value = data.list;
 			total.value = data.totalCount;
+			return data
 		} finally {
 			loading.value = false;
 		}

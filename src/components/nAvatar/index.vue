@@ -1,5 +1,7 @@
 <template>
-	<NImage class="w-14 h-14 rounded-full" :src="props.src || defaultAvatar" fit="cover"></NImage>
+	<NImage class="w-14 h-14 rounded-full" :src="props.src || defaultAvatar" fit="cover"
+		v-bind="$attrs"
+	></NImage>
 </template>
 
 <script setup>

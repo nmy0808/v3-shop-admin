@@ -37,6 +37,7 @@ import NEditTag from '@/components/nEditTag/index.vue'
 import NImageSelect from '@/components/nImageSelect/index.vue'
 import NDialog from '@/components/nDialog/index.vue'
 import NSelectImageDialog from '@/components/nSelectImageDialog/index.vue'
+import NUploadMultiple from '@/components/nUploadMultiple/index.vue'
 
 import auth from './directives/auth'
 import role from './directives/role'
@@ -90,6 +91,7 @@ export default {
 		app.component('NImageSelect', NImageSelect);
 		app.component('NDialog', NDialog);
 		app.component('NSelectImageDialog', NSelectImageDialog);
+		app.component('NUploadMultiple', NUploadMultiple);
 		
 
 		//注册全局指令
