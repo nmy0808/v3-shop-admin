@@ -36,7 +36,6 @@ import ActionDrawer from './components/ActionDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 
 const useUserList = () => {
-
 	const { loading, list, pageSearch, total, getListData, deleteData, statusData } =
 		usePageAction({
 			listDataApi: skuListApi,

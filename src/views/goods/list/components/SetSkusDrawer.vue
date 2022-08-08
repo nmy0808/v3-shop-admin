@@ -36,8 +36,8 @@
 			</el-form>
 			<!-- 多规格 -->
 			<SkuCard v-if="formData.sku_type === 1" v-model:goodsSkus='goods_skus_card'
-				:loading="loading"
 				@get-info-data='getInfoData'
+				:goodsId="currentId"
 			></SkuCard>
 			<!-- <div class="el-card">
 					<div class=" p-4 pt-2 light:bg-gray-100 dark:bg-black/30  ">
@@ -126,7 +126,7 @@ const formData = ref({
 const goods_skus_card = ref([])
 // 当前编辑对象 (新增状态为null)
 let currentEditData = null
-let currentId = null
+let currentId = ref(null)
 // 关闭时重置
 watch(isVisible, () => {
 	if (!isVisible.value) {
@@ -136,7 +136,7 @@ watch(isVisible, () => {
 })
 const open = async ({ title, data }) => {
 	loading.value = true
-	currentId = data.id
+	currentId.value = data.id
 	await getInfoData()
 	isVisible.value = true
 	currentTitle.value = title
@@ -145,7 +145,7 @@ const open = async ({ title, data }) => {
 
 const getInfoData = () => {
 	const params = {}
-	params.id = currentId
+	params.id = currentId.value
 	// 根据id获取商品资料
 	goodsInfoApi(params).then(({ data: result }) => {
 		const sku_type = result.sku_type
