@@ -28,7 +28,7 @@ export function confirm({message, type='warning'}){
 	})
 }
 
-export function message({ message, type, duration }){
+export function message({ message, type='success', duration }){
 	ElMessage({
 		type,
 		message,

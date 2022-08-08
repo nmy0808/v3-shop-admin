@@ -50,7 +50,7 @@
 			</template>
 			<template #action="{ row }">
 				<el-button type="primary" link size="small" @click="handleEdit(row)">编辑</el-button>
-				<el-button type="primary" link size="small" @click="handleEdit(row)">商品规格</el-button>
+				<el-button type="primary" link size="small" @click="handleSkus(row)">商品规格</el-button>
 				<el-button type="primary" link size="small" @click="handleBanner(row)">设置轮播图</el-button>
 				<el-button type="primary" link size="small" @click="handleContent(row)">商品详情</el-button>
 				<el-button type="danger" link size="small" @click="handleDelete({ ids: [row.id] })">删除</el-button>
@@ -59,6 +59,7 @@
 		<ActionDrawer ref="actionDrawerRef" :getListData="getUserListData"></ActionDrawer>
 		<SetBannerDrawer ref="setBannerDrawerRef" :getListData="getUserListData"></SetBannerDrawer>
 		<SetContentDrawer ref="setContentDrawerRef" :getListData="getUserListData"></SetContentDrawer>
+		<SetSkusDrawer ref="setSkusDrawerRef" :getListData="getUserListData"></SetSkusDrawer>
 	</NContainer>
 </template>
 <script>
@@ -69,6 +70,7 @@ import { goodsListApi, goodsCheckApi, goodsBatchDeleteApi } from '@/api/model/go
 import ActionDrawer from './components/ActionDrawer.vue'
 import SetBannerDrawer from './components/SetBannerDrawer.vue'
 import SetContentDrawer from './components/SetContentDrawer.vue'
+import SetSkusDrawer from './components/SetSkusDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 import { notification } from '@/libs/elementPlus'
 
@@ -138,6 +140,10 @@ const useAction = () => {
 	const handleContent = (data) => {
 		setContentDrawerRef.value.open({ title: '编辑商品详情', data })
 	}
+	const setSkusDrawerRef = ref(null)
+	const handleSkus = (data) => {
+		setSkusDrawerRef.value.open({ title: '编辑商品规格', data })
+	}
 	return {
 		actionDrawerRef,
 		handleCreate,
@@ -145,7 +151,9 @@ const useAction = () => {
 		setBannerDrawerRef,
 		handleBanner,
 		setContentDrawerRef,
-		handleContent
+		handleContent,
+		setSkusDrawerRef,
+		handleSkus
 	}
 }
 
@@ -168,7 +176,8 @@ const {
 
 const { actionDrawerRef, handleCreate, handleEdit,
 	setBannerDrawerRef, handleBanner,
-	setContentDrawerRef, handleContent } = useAction()
+	setContentDrawerRef, handleContent,
+	setSkusDrawerRef,  handleSkus} = useAction()
 
 const tableOptionsCalc = ref(tableOptions.value)
 
