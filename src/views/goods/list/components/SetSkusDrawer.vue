@@ -36,7 +36,7 @@
 			<!-- 多规格 -->
 			<SkuCard v-if="formData.sku_type === 1" v-model:goodsSkus='goods_skus_card' @get-info-data='getInfoData'
 				:goodsId="currentId"></SkuCard>
-			<SkuTable class="mt-6" ref="skuTableRef" :goodsSkusCard="goods_skus_card" :goodsSkus="goodsSkus"></SkuTable>
+			<SkuTable v-if="formData.sku_type === 1" class="mt-6" ref="skuTableRef" :goodsSkusCard="goods_skus_card" :goodsSkus="goodsSkus"></SkuTable>
 		</NDrawer>
 	</div>
 </template>

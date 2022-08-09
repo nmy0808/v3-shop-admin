@@ -48,7 +48,7 @@
 						:loading="row.checkLoading">审核拒绝</el-button>
 				</div>
 			</template>
-			<template #action="{ row }">
+			<template #action="{ row }" v-if="listSearchParams.tab !== 'delete'">
 				<el-button type="primary" link size="small" @click="handleEdit(row)">编辑</el-button>
 				<el-button type="primary" link size="small" @click="handleSkus(row)">商品规格</el-button>
 				<el-button type="primary" link size="small" @click="handleBanner(row)">设置轮播图</el-button>
