@@ -1,5 +1,5 @@
 <template>
-	<el-drawer :size="size" lock-scroll destroy-on-close :close-on-press-escape="false" :close-on-click-modal="false"
+	<el-drawer :size="size" lock-scroll destroy-on-close :close-on-press-escape="false"  :close-on-click-modal="false"
 		v-model="isVisible" :direction="direction" :before-close="handleBeforeClose" v-bind="$attrs">
 		<el-scrollbar>
 			<el-main v-loading="loading">

@@ -1,7 +1,6 @@
 <template>
 	<div>
-		<NDrawer 
-		 v-model="isVisible" :title="currentTitle" :loading="loading" @cancel="isVisible = false"
+		<NDrawer size="70%" v-model="isVisible" :title="currentTitle" :loading="loading" @cancel="isVisible = false"
 			@confirm="handleSubmit">
 			<el-form ref="formRef" :model="formData" label-width="80px">
 				<el-form-item label="规格类型" prop="name">
@@ -35,37 +34,9 @@
 				</template>
 			</el-form>
 			<!-- 多规格 -->
-			<SkuCard v-if="formData.sku_type === 1" v-model:goodsSkus='goods_skus_card'
-				@get-info-data='getInfoData'
-				:goodsId="currentId"
-			></SkuCard>
-			<!-- <div class="el-card">
-					<div class=" p-4 pt-2 light:bg-gray-100 dark:bg-black/30  ">
-						<el-input class="w-70 m-0" size="small">
-							<template #append>
-								<NIcon icon="more" color="black" class="cursor-pointer mt-1"></NIcon>
-							</template>
-						</el-input>
-					</div>
-					<div class="p-4 pb-0 flex flex-wrap">
-						<el-input class="w-60 m-0 mr-2 mb-4" size="small">
-							<template #append>
-								<NIcon icon="close" color="black" class="cursor-pointer mt-1"></NIcon>
-							</template>
-						</el-input>
-						<el-input class="w-60 m-0 mr-2 mb-4" size="small">
-							<template #append>
-								<NIcon icon="close" color="black" class="cursor-pointer mt-1"></NIcon>
-							</template>
-						</el-input>
-						<el-input class="w-60 m-0 mr-2 mb-4" size="small">
-							<template #append>
-								<NIcon icon="close" color="black" class="cursor-pointer mt-1"></NIcon>
-							</template>
-						</el-input>
-						<el-button class="h-9 flex items-center" size="small">+添加值</el-button>
-					</div>
-				</div> -->
+			<SkuCard v-if="formData.sku_type === 1" v-model:goodsSkus='goods_skus_card' @get-info-data='getInfoData'
+				:goodsId="currentId"></SkuCard>
+			<SkuTable class="mt-6" ref="skuTableRef" :goodsSkusCard="goods_skus_card" :goodsSkus="goodsSkus"></SkuTable>
 		</NDrawer>
 	</div>
 </template>
@@ -73,16 +44,18 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { goodsInfoApi, goodsSkuUpdateApi } from '@/api/model/goods'
-import { uploadImageApi } from "@/api/model/upload";
 import { notification } from '@/libs/elementPlus';
 import SkuCard from './SkuCard.vue'
+import SkuTable from './SkuTable.vue'
+import cloneDeep from 'lodash/cloneDeep'
+import { cartesianProductOf } from '@/utils/sku';
 const props = defineProps({
 	getListData: {
 		type: Function,
 		default: null
 	}
 })
-
+const emit = defineEmits(['move'])
 const isVisible = ref(false)
 const loading = ref(false)
 
@@ -124,6 +97,7 @@ const formData = ref({
 })
 // 规格
 const goods_skus_card = ref([])
+const goodsSkus = ref([])
 // 当前编辑对象 (新增状态为null)
 let currentEditData = null
 let currentId = ref(null)
@@ -134,6 +108,7 @@ watch(isVisible, () => {
 		goods_skus_card.value = []
 	}
 })
+
 const open = async ({ title, data }) => {
 	loading.value = true
 	currentId.value = data.id
@@ -157,23 +132,21 @@ const getInfoData = () => {
 			// 规格类型：1多规格
 			// sku 规格
 			goods_skus_card.value = result.goodsSkusCard
+			goodsSkus.value = getGoodsSkus(goods_skus_card.value, result.goodsSkus)
 		}
 		currentEditData = result
 	})
 }
 
-
-const customUpload = async (file) => {
-	// 1.自定义上传请求
-	// 2.返回图片url即可
-	const { data } = await uploadImageApi({ img: [file] });
-	return data.url;
-}
+const skuTableRef = ref(null)
 
 const handleSubmit = async () => {
 	try {
 		loading.value = true
-		await goodsSkuUpdateApi({ ...formData.value, id: currentEditData.id })
+		await goodsSkuUpdateApi({
+			...formData.value, id: currentEditData.id,
+			goodsSkus: skuTableRef.value.getData()
+		})
 		notification({ message: '商品规格设置完成', type: 'success' })
 	}
 	finally {
@@ -183,8 +156,53 @@ const handleSubmit = async () => {
 	}
 }
 
+const getGoodsSkus = (goodsSkusCard, goodsSkus) => {
+	const goodsSkusCopy = []
+	cloneDeep(goodsSkus).forEach(item => {
+		item._ids = Object.values(item.skus).map(it => it.id).join(',')
+		goodsSkusCopy.push(item)
+	})
+	const goodsSkusCardCopy = cloneDeep(goodsSkusCard)
+	const skus = goodsSkusCardCopy.map(it => [...it.goodsSkusCardValue]).filter(it => it.length > 0)
+
+	const values = cartesianProductOf(...skus)
+	const result = values.map(item => {
+		const _ids = item.map(it => it.id).join(',')
+		if (_ids) {
+			const target = goodsSkusCopy.find(it => it._ids === _ids)
+			if (target) {
+				target?._ids && (delete target['_ids'])
+				target.skus = item
+				return target
+			}
+		}
+		const obj = {}
+		// obj.id = 
+		obj.image = ""
+		obj._ids = _ids
+		obj.pprice = 0
+		obj.oprice = 0
+		obj.cprice = 0
+		obj.stock = 0
+		obj.volume = 0
+		obj.weight = 0
+		obj.code = ""
+		obj.goods_id = currentId.value
+		obj.skus = item
+		return obj
+	})
+	return result
+}
+
+
+const getAllSkus = () => {
+	return goodsSkus.value
+}
+
 defineExpose({
-	open
+	open,
+	getGoodsSkus: getAllSkus,
+	refreshGoodsSkus: getGoodsSkus
 })
 </script>
 
