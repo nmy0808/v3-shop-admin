@@ -2,7 +2,8 @@
 	<NContainer>
 		<NSearchHeader :schema="searchSchema" :showFold="true" @search="handleSearch"></NSearchHeader>
 		<NActionHeader @create="handleCreate" @refresh="getUserListData" />
-		<NTable  table-layout="auto"	 ref="tableRef" :data="list" :options="tableOptions" :dragSort="false" :loading="loading"
+		<NTable  table-layout="auto"	 ref="tableRef" :data="list"
+			 :options="tableOptions" :dragSort="false" :loading="loading"
 			:total="total" v-model:currentPage="pageSearch.page" v-model:pageSize="pageSearch.limit">
 			<!-- 会员 -->
 			<template #user="{ row }">

@@ -95,7 +95,8 @@ const useList = () => {
 			await goodsCheckApi(params)
 			await getListData()
 			notification({
-				message: ischeck === 1 ? '已同意' : '已拒绝'
+				message: ischeck === 1 ? '已同意' : '已拒绝',
+				type: 'success',
 			})
 		}
 		finally {
@@ -177,7 +178,7 @@ const {
 const { actionDrawerRef, handleCreate, handleEdit,
 	setBannerDrawerRef, handleBanner,
 	setContentDrawerRef, handleContent,
-	setSkusDrawerRef,  handleSkus} = useAction()
+	setSkusDrawerRef, handleSkus } = useAction()
 
 const tableOptionsCalc = ref(tableOptions.value)
 

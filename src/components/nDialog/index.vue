@@ -1,9 +1,7 @@
 <template>
-	<el-dialog 
-		title="浏览" v-model="isVisible" width="1200px" top="3%" :close-on-click-modal="false"
-		:close-on-press-escape="false"
-		 v-bind="$attrs"
-		>
+	<el-dialog custom-class="c-pt-0" lock-scroll title="浏览" v-model="isVisible" width="1200px" top="3%"
+		:close-on-click-modal="false" :close-on-press-escape="false" v-bind="$attrs">
+		<slot name="header"></slot>
 		<el-scrollbar height="69vh">
 			<slot name="content"></slot>
 		</el-scrollbar>
@@ -37,6 +35,6 @@ watch(isVisible, () => {
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 </style>

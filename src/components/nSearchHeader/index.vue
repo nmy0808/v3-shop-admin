@@ -4,7 +4,7 @@
 			<NForm ref="nFormRef" :schema="schema" :form-options="formOptions"></NForm>
 		</div>
 		<div class="flex flex-shrink-0 justify-end w-190px ">
-			<el-button type="" @click="handleReset" size="small">重置</el-button>
+			<el-button type="" @click="handleReset" size="small" v-if="showResetBtn">重置</el-button>
 			<el-button type="primary" @click="handleSearch" size="small">搜索</el-button>
 			<div v-if="!showFold" class="flex justify-center ml-3 mt-2 color-primary cursor-pointer select-none" @click="toggle">
 				{{ isFold ? '展开' : '收起' }}
@@ -21,6 +21,10 @@ const props = defineProps({
 	showFold: {
 		type: Boolean,
 		default: false
+	},
+	showResetBtn: {
+		type: Boolean,
+		default: true
 	},
 	schema: {
 		type: Array,

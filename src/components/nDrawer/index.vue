@@ -9,11 +9,13 @@
 			</el-main>
 		</el-scrollbar>
 		<template #footer>
-			<div style="flex: auto" v-if="showActionBtn">
+			<slot name="footer">
+				<div style="flex: auto" v-if="showActionBtn">
 				<el-button @click="handleCancelClick" v-if="showCancelBtn">取消</el-button>
 				<el-button type="primary" @click="handleConfirmClick" :loading="loading" v-if="showConfirmBtn">
 					{{ confirmBtnText }}</el-button>
 			</div>
+			</slot>
 		</template>
 	</el-drawer>
 </template>
