@@ -6,7 +6,9 @@
 			</slot>
 		</div>
 		<div>
-			<el-button size="small" icon="el-icon-refresh" @click="emit('refresh')"></el-button>
+			<slot name="right">
+				<el-button size="small" icon="el-icon-refresh" @click="emit('refresh')"></el-button>
+			</slot>
 		</div>
 	</div>
 </template>
