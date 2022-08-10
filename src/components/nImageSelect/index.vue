@@ -1,10 +1,10 @@
 <template>
 	<div class="header">
-		<el-button type="primary" @click="handleCreateMenu">新增</el-button>
-		<el-button type="primary" @click="handleCreateImage">上传图片</el-button>
+		<el-button type="primary" size="small" @click="handleCreateMenu">新增分类</el-button>
+		<el-button type="primary" size="small" @click="handleCreateImage" plain>上传图片</el-button>
 	</div>
 	<div class="content">
-		<el-card class="select-slider" v-loading="menusLoading" :body-style="{ padding: 0 }" shadow="never">
+		<el-card class="select-slider" v-if="!first" v-loading="menusLoading" :body-style="{ padding: 0 }" shadow="never">
 			<el-scrollbar>
 				<div class="slider-item" :class="{ active: activeMenuId === item.id }" v-for="(item, index) in menuList"
 					:key="index" @click="handleMenuClick(item)">
@@ -17,7 +17,7 @@
 		</el-card>
 
 		<div class="select-content" v-loading="imageLoading">
-			<el-card class="item" :class="{ selected: imageSelected.find(it => it.id === item.id) }"
+			<el-card class="item" :class="{ 'cursor-pointer': isSelect ,selected: imageSelected.find(it => it.id === item.id) }"
 				@click="handleSelectImage(item)" :body-style="{ padding: 0 }" shadow="never" v-for="(item, index) in imageList"
 				:key="index">
 				<NImage class="item-image" :src="item.url" lazy></NImage>
@@ -26,17 +26,17 @@
 					{{ item.name }}
 				</div>
 				<div class="item-action">
-					<el-link class="item-link pr-2" type="primary" size="mini" @click="handlePreviewImage(item)">浏览</el-link>
-					<el-link class="item-link" type="primary" size="mini" @click="handleRenameImage(item)">重命名</el-link>
-					<el-link class="item-link delete" type="danger" size="mini" @click="handleRemoveImage(item)">删除</el-link>
+					<el-link class="item-link pr-2 text-sm" type="primary"  @click="handlePreviewImage(item)">浏览</el-link>
+					<el-link class="item-link text-sm" type="primary"  @click="handleRenameImage(item)">重命名</el-link>
+					<el-link class="item-link delete text-sm" type="danger"  @click="handleRemoveImage(item)">删除</el-link>
 				</div>
 			</el-card>
 			<span style="width: 300px" v-for="(item, index) in 4" :key="index"></span>
 			<!-- @size-change="handleSizeChange" @current-change="handleCurrentChange"  -->
 		</div>
 	</div>
-	<div class="page-wrap">
-		<div class="slider-page">
+	<div class="page-wrap" v-if="!menusLoading">
+		<div class="slider-page" >
 			<el-button type="primary" plain icon="el-icon-arrowLeft" @click="handleMenuPrevChange(-1)"
 				:disabled="menuListPage.page === 1">
 			</el-button>
@@ -51,6 +51,17 @@
 		<MenuRenameDrawer ref="menuRenameDrawerRef" />
 		<MenuImageDrawer ref="menuImageDrawerRef" :get-data="getImageListData" />
 	</div>
+	<!-- <template v-else>
+		<div class="flex">
+			<div>
+				<el-skeleton  animated :rows="5" class="w-70"></el-skeleton>
+			<el-skeleton  animated :rows="10" class="w-70 mt-5"></el-skeleton>
+			</div>
+			<div>
+				<el-skeleton  animated :rows="10" class="w-230 ml-20 mt-30"></el-skeleton>
+			</div>
+		</div>
+	</template> -->
 </template>
 
 <script setup>
@@ -85,6 +96,10 @@ const props = defineProps({
 	imagePageLimit: { // 图片列表一次请求多少个数据
 		type: Number,
 		default: 10
+	},
+	menuPageLimit: { // 图片列表一次请求多少个数据
+		type: Number,
+		default: 10
 	}
 })
 
@@ -99,16 +114,17 @@ const activeMenuId = ref(null)
 const menuList = ref([])
 const menusTotal = ref(0)
 const renameVisible = ref(false)
-let first = true
+let first = ref(true)
 const menusLoading = ref(false)
+const skeleton = ref(true) // 骨架屏
 const getMenusData = async () => {
 	try {
 		menusLoading.value = true
-		const { data } = await imageMenusApi({ page: menuListPage.value.page, limit: menuListPage.value.limit })
+		const { data } = await imageMenusApi({ page: menuListPage.value.page, limit: props.menuPageLimit })
 		menuList.value = data.list
 		menusTotal.value = data.totalCount
-		first && (activeMenuId.value = menuList.value[0].id)
-		first = false
+		first.value && (activeMenuId.value = menuList.value[0].id)
+		first.value = false
 	}
 	finally {
 		menusLoading.value = false
@@ -261,7 +277,7 @@ defineExpose({ clearSelected })
 
 	.select-slider {
 		width: 200px;
-		height: 448px;
+		min-height: 448px;
 		margin-bottom: 20px;
 
 		.slider-item {
@@ -291,13 +307,12 @@ defineExpose({ clearSelected })
 		flex: 1;
 		flex-wrap: wrap;
 		justify-content: space-evenly;
-
+		min-height: 448px;
 		.item {
 			position: relative;
 			width: 300px;
 			height: 214px;
 			margin-bottom: 20px;
-			cursor: pointer;
 
 			&.selected {
 				outline: 1px solid var(--el-color-primary);
