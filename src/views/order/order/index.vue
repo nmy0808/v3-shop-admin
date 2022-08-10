@@ -3,13 +3,6 @@
 		<el-tabs v-model="listSearchParams.tab" type="card" tab-position="top" @tab-change="handleTabClick">
 			<el-tab-pane v-for="(item, index) in tabOptions" :key="index" :label="item.label" :name="item.name" />
 		</el-tabs>
-		<!--
-					format:       指定输入框的格式
-					value-format: 指定绑定值的格式
-					格式:         'x' / 'YYYY-MM-DD' / 'YYYY/MM/DD' / 'YYYY年 MM月 DD日' 等等...
-				 -->
-		<!-- <el-date-picker v-model="listSearchParams.starttime" type="date" placeholder="选择开始时间" format="YYYY年 MM月 DD日"
-			value-format="YYYY-MM-DD" @change="handleDateChange" /> -->
 		<NSearchHeader class="my-4" :schema="searchSchema" :showFold="false"
 			:formOptions="{ labelWidth: '60px', size: 'small', inline: true }" @search="handleSearch">
 		</NSearchHeader>
@@ -18,14 +11,13 @@
 				<el-button type="danger" size="small" @click="handleBatchDelete">彻底删除</el-button>
 			</template>
 			<template #right>
-				<el-button size="small" icon="el-icon-download" @click="getUserListData"></el-button>
-				<el-button size="small" icon="el-icon-refresh" @click="getUserListData"></el-button>
+				<el-button size="small" icon="el-icon-download" @click="handleDownload"></el-button>
+				<el-button size="small" icon="el-icon-refresh" @click="getListData"></el-button>
 			</template>
 		</NActionHeader>
 		<NTable table-layout="auto" ref="tableRef" :data="list" :options="tableOptions" :dragSort="false" :loading="loading"
 			:total="total" v-model:currentPage="pageSearch.page" v-model:pageSize="pageSearch.limit"
-				@selection-change="handleSelectChange"
-			>
+			@selection-change="handleSelectChange">
 			<!-- 商品 -->
 			<template #goods-info="{ row }">
 				<div class="flex items-center">
@@ -81,24 +73,26 @@
 				<div class="flex justify-end w-38">
 					<el-button v-if="row.payment_method === ALIPAY_TYPE" type="primary" link size="small"
 						@click="handleOrderInfo(row)">订单详情</el-button>
-					<el-button type="primary" link size="small" @click="handleDelete(row)">订单发货</el-button>
+					<el-button type="primary" link size="small" @click="handleOrderSend(row)">订单发货</el-button>
 				</div>
 			</template>
 		</NTable>
-		<ActionDrawer ref="actionDrawerRef" :getListData="getUserListData"></ActionDrawer>
-		<OrderInfoDrawer ref="orderInfoDrawerRef" :getListData="getUserListData"></OrderInfoDrawer>
+		<ActionDrawer ref="actionDrawerRef" :getListData="getListData"></ActionDrawer>
+		<OrderInfoDrawer ref="orderInfoDrawerRef" :getListData="getListData"></OrderInfoDrawer>
 	</NContainer>
 </template>
 <script>
 import { ref } from 'vue'
 import { searchSchema } from './config/searchSchema'
 import { tableOptions } from './config/tableOptions'
-import { orderListApi, orderStatusApi, orderBatchDeleteApi } from '@/api/model/order'
+import { orderListApi, orderStatusApi, orderBatchDeleteApi, orderExportApi } from '@/api/model/order'
 import ActionDrawer from './components/ActionDrawer.vue'
 import OrderInfoDrawer from './components/OrderInfoDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 import { ALIPAY_TYPE } from '@/constant/'
-const useUserList = () => {
+import { saveAs } from 'file-saver';
+
+const useList = () => {
 	const listSearchParams = ref({
 		no: '',
 		tab: 'all',
@@ -132,12 +126,12 @@ const useUserList = () => {
 		})
 	}
 	const selectedList = ref([])
-	const handleSelectChange = (list)=>{
+	const handleSelectChange = (list) => {
 		selectedList.value = [...list]
 	}
 	const handleBatchDelete = () => {
-		deleteData({ ids: selectedList.value.map(it => it.id)})
-	 }
+		deleteData({ ids: selectedList.value.map(it => it.id) })
+	}
 
 	const handleSearch = (model) => {
 		listSearchParams.value = { ...listSearchParams.value, ...model }
@@ -148,8 +142,12 @@ const useUserList = () => {
 		getListData()
 	}
 
-
-
+	const handleDownload = async () => {
+		const data = await orderExportApi({ ...listSearchParams.value })
+		let url = window.URL.createObjectURL(new Blob([ data ]))
+		let filename = (new Date()).getTime() + ".xlsx"
+		saveAs(url, filename)
+	}
 
 	return {
 		tabOptions,
@@ -160,29 +158,30 @@ const useUserList = () => {
 		total,
 		handleSelectChange,
 		handleBatchDelete,
-		getUserListData: getListData,
+		getListData: getListData,
 		handleStatusChange,
 		handleSearch,
 		handleDelete: deleteData,
-		handleTabClick
+		handleTabClick,
+		handleDownload
 	}
 }
 
 const useAction = () => {
 	const actionDrawerRef = ref(null)
 
-	const handleCreate = () => {
-		actionDrawerRef.value.open({ title: '新增' })
+	const handleOrderSend = (data) => {
+		actionDrawerRef.value.open({ title: '订单发货', data })
 	}
 
 
 	const orderInfoDrawerRef = ref(null)
 	const handleOrderInfo = (data) => {
-			orderInfoDrawerRef.value.open({ title: '订单信息', data })
-		}
+		orderInfoDrawerRef.value.open({ title: '订单信息', data })
+	}
 	return {
 		actionDrawerRef,
-		handleCreate,
+		handleOrderSend,
 		handleOrderInfo,
 		orderInfoDrawerRef
 	}
@@ -202,15 +201,15 @@ const {
 	handleSelectChange,
 	handleBatchDelete,
 	handleStatusChange,
-	getUserListData,
+	getListData,
 	handleSearch,
-	handleDelete,
+	handleDownload,
 	handleTabClick,
-} = useUserList()
+} = useList()
 
-getUserListData()
+getListData()
 
-const { actionDrawerRef, handleCreate, handleOrderInfo , orderInfoDrawerRef} = useAction()
+const { actionDrawerRef, handleOrderSend, handleOrderInfo, orderInfoDrawerRef } = useAction()
 
 </script>
 

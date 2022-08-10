@@ -8,8 +8,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { getActionSchema } from './config/actionSchema'
-import { userCreateApi, userEditApi } from '@/api/model/user'
+import { orderShipApi } from '@/api/model/order'
 import { usePageAction } from '@/hooks/usePageAction'
+import { notification } from '@/libs/elementPlus';
 
 const props = defineProps({
 	getListData: {
@@ -18,18 +19,12 @@ const props = defineProps({
 	}
 })
 
-const { createData, updateData, loading } = usePageAction({
-	createDataApi: userCreateApi,
-	updateDataApi: userEditApi
-})
 
 const isVisible = ref(false)
-
+const loading = ref(false)
 
 const actionSchema = ref([])
 const currentTitle = ref('')
-
-// 当前编辑对象 (新增状态为null)
 let currentEditData = null
 
 // 关闭时重置
@@ -49,32 +44,27 @@ const mergeData = (data) => {
 const open = ({ title, data }) => {
 	actionSchema.value = getActionSchema().value
 	currentTitle.value = title
+	console.log(data, "daa")
+	currentEditData = data
 	if (data) {
-		currentEditData = data
-		const index = actionSchema.value.findIndex(it => it.prop === 'password')
-		actionSchema.value.splice(index, 1)
 		mergeData(data)
 	}
 	isVisible.value = true
 }
 
 const handleSubmit = async (model) => {
-	if (currentEditData) {
-		await updateData({
-			params: { ...model, id: currentEditData.id },
-			callback: () => {
-				isVisible.value = false
-				props.getListData && props.getListData()
-			}
+	try {
+		loading.value = true
+		await orderShipApi({ id: currentEditData.id, ...model })
+		notification({
+			message: '提交成功',
+			type: 'success'
 		})
-	} else {
-		await createData({
-			params: model,
-			callback: () => {
-				isVisible.value = false
-				props.getListData && props.getListData()
-			}
-		})
+		props.getListData && props.getListData()
+	}
+	finally {
+		loading.value = false
+		isVisible.value = false
 	}
 }
 
