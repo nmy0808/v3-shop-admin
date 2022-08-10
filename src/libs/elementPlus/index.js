@@ -36,16 +36,19 @@ export function message({ message, type='success', duration }){
 	});
 }
 
-export function prompt({message, title, inputValue, inputPattern, inputErrorMessage}){
+export function prompt({message, title, inputValue, inputPattern, inputErrorMessage,
+	beforeClose, ...arg}){
 	return new Promise((resolve, reject)=>{
 		ElMessageBox.prompt(message, title, {
 			confirmButtonText: '确定',
 			cancelButtonText: '取消',
 			inputPattern,
 			inputErrorMessage,
-			inputValue
+			inputValue,
+			beforeClose,
+			...arg
 		})
-			.then(({ value }) => {	
+			.then(({ value }) => {
 				resolve(value)
 			})
 			.catch(() => {

@@ -71,9 +71,15 @@
 			</template>
 			<template #action="{ row }">
 				<div class="flex justify-end w-38">
-					<el-button v-if="row.payment_method === ALIPAY_TYPE" type="primary" link size="small"
-						@click="handleOrderInfo(row)">订单详情</el-button>
-					<el-button type="primary" link size="small" @click="handleOrderSend(row)">订单发货</el-button>
+					<!-- v-if="row.payment_method" -->
+					<el-button type="primary" link size="small" @click="handleOrderInfo(row)">订单详情</el-button>
+					<template v-if="listSearchParams.tab === 'all' || listSearchParams.tab === 'noship'">
+						<el-button type="primary" link size="small" @click="handleOrderSend(row)">订单发货</el-button>
+					</template>
+					<template v-if="listSearchParams.tab === 'refunding'">
+						<el-button type="primary" link size="small" @click="handleStatusChange(row, 1)">同意退款</el-button>
+						<el-button type="primary" link size="small" @click="handleStatusChange(row, 0)">拒绝退款</el-button>
+					</template>
 				</div>
 			</template>
 		</NTable>
@@ -91,6 +97,7 @@ import OrderInfoDrawer from './components/OrderInfoDrawer.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 import { ALIPAY_TYPE } from '@/constant/'
 import { saveAs } from 'file-saver';
+import { notification, prompt, message as elMessage } from '@/libs/elementPlus'
 
 const useList = () => {
 	const listSearchParams = ref({
@@ -105,7 +112,7 @@ const useList = () => {
 		{ label: '全部', name: 'all' },
 		{ label: '待支付', name: 'nopay' },
 		{ label: '待发货', name: 'noship' },
-		{ label: '待收货', name: 'shiped' },
+		{ label: '已发货', name: 'shiped' },
 		{ label: '已收货', name: 'received' },
 		{ label: '已完成', name: 'finish' },
 		{ label: '已关闭', name: 'closed' },
@@ -119,12 +126,7 @@ const useList = () => {
 			statusDataApi: orderStatusApi
 		})
 
-	const handleStatusChange = async (row) => {
-		statusData({
-			params: { id: row.id, status: row.status },
-			row
-		})
-	}
+
 	const selectedList = ref([])
 	const handleSelectChange = (list) => {
 		selectedList.value = [...list]
@@ -144,10 +146,47 @@ const useList = () => {
 
 	const handleDownload = async () => {
 		const data = await orderExportApi({ ...listSearchParams.value })
-		let url = window.URL.createObjectURL(new Blob([ data ]))
+		let url = window.URL.createObjectURL(new Blob([data]))
 		let filename = (new Date()).getTime() + ".xlsx"
 		saveAs(url, filename)
 	}
+
+	const handleStatusChange = async (row, agree) => {
+		try {
+			const params = {}
+			params.id = row.id
+			params.agree = agree
+			let message = '同意退款操作完成'
+			// 如果同意退款
+			if (agree !== 1) {
+				params.disagree_reason = await prompt({
+					title: '拒绝退款',
+					message: '请输入拒绝退款的理由',
+					closeOnClickModal: false,
+					closeOnPressEscape: false,
+					beforeClose: (action, instance, done) => {
+						const value = instance.inputValue?.trim()
+						if (value) {
+							return done()
+						}
+						elMessage({ message: '必须填写拒绝退款的理由', type: 'error' })
+					}
+				})
+				// 如果拒绝退款
+				message = '拒绝退款操作完成'
+			}
+			await orderStatusApi(params)
+			notification({
+				message,
+				type: agree === 1 ? 'success' : 'error'
+			})
+		}
+		catch (error) { }
+		finally {
+		}
+
+	}
+
 
 	return {
 		tabOptions,
@@ -179,6 +218,7 @@ const useAction = () => {
 	const handleOrderInfo = (data) => {
 		orderInfoDrawerRef.value.open({ title: '订单信息', data })
 	}
+
 	return {
 		actionDrawerRef,
 		handleOrderSend,
@@ -200,11 +240,11 @@ const {
 	total,
 	handleSelectChange,
 	handleBatchDelete,
-	handleStatusChange,
 	getListData,
 	handleSearch,
 	handleDownload,
 	handleTabClick,
+	handleStatusChange
 } = useList()
 
 getListData()

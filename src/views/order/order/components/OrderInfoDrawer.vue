@@ -25,7 +25,9 @@
 							<NAvatar :src="item.goods_item.cover" class="mr-4 w-20 h-20 rounded-2px"></NAvatar>
 							<div>
 								<div class="mb-2 text-12px">{{ item.goods_item.title }}</div>
-								<el-tag size="small">{{ Object.values(item?.goods_skus.skus).map(it => it.value).join(', ') }}</el-tag>
+								<el-tag size="small" v-if="item.goods_skus">{{ Object.values(item?.goods_skus?.skus).map(it =>
+										it.value).join(', ')
+								}}</el-tag>
 								<div class="mt-2 ">
 									<span class="text-red-500">
 										&yen;{{ item.price }}
