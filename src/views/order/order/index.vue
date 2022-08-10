@@ -70,9 +70,11 @@
 				</div>
 			</template>
 			<template #action="{ row }">
-				<div class="flex justify-end w-38">
+				<div class="flex justify-end w-68">
 					<!-- v-if="row.payment_method" -->
-					<el-button type="primary" link size="small" @click="handleOrderInfo(row)">订单详情</el-button>
+					<el-button type="primary"
+						v-if='row.payment_method || listSearchParams.tab !== "all"'
+					link size="small" @click="handleOrderInfo(row)">订单详情</el-button>
 					<template v-if="listSearchParams.tab === 'all' || listSearchParams.tab === 'noship'">
 						<el-button type="primary" link size="small" @click="handleOrderSend(row)">订单发货</el-button>
 					</template>
