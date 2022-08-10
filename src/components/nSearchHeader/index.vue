@@ -4,6 +4,7 @@
 			<NForm ref="nFormRef" :schema="schema" :form-options="formOptions"></NForm>
 		</div>
 		<div class="flex flex-shrink-0 justify-end w-190px ">
+			<slot name="right"></slot>
 			<el-button type="" @click="handleReset" size="small" v-if="showResetBtn">重置</el-button>
 			<el-button type="primary" @click="handleSearch" size="small">搜索</el-button>
 			<div v-if="!showFold" class="flex justify-center ml-3 mt-2 color-primary cursor-pointer select-none" @click="toggle">
@@ -15,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
 	showFold: {
