@@ -5,3 +5,7 @@ import http from "@/utils/request";
 export const settingInfoApi = async (data) => {
 	return await http.get(`${config.API_URL}/sysconfig`, data);
 };
+// 上传
+export const fileUploadApi = async (data) => {
+	return await http.post(`${config.API_URL}/sysconfig/upload`, data);
+};

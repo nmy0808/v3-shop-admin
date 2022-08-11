@@ -108,6 +108,7 @@ defineExpose({ resetFields, validate, getModel })
 							</template>
 						</template>
 					</component>
+					<span v-if="item.appendText" class="ml-3">{{item.appendText}}</span>
 				</template>
 			</el-form-item>
 		</template>
