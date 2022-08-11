@@ -67,7 +67,7 @@ const handleUpload = async (file) => {
 const handleChange = () => {
   const files = fileRef.value.files
 	if ((props.modelValue.length + files.length) > props.maxNum ) {
-		ElMessage.error(`只能上传${props.maxNum}张文件`)
+		ElMessage.error(`最多上传${props.maxNum}张文件`)
 		return false
 	}
 	let handleFns = []
@@ -119,8 +119,8 @@ const handleChange = () => {
       </div>
     </div>
 		<!-- 单独增加图片 -->
-		<div 
-			@click="handleUploadClick" class="upload-main" 
+		<div
+			@click="handleUploadClick" class="upload-main"
 				v-if="(modelValue.length) < maxNum">
       <NIcon icon="plus" :size="20" color="#cccccc"></NIcon>
     </div>
