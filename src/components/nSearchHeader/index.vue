@@ -1,7 +1,9 @@
 <template>
 	<div class="flex  duration-100" :class="{ isFold, 'search-header-container': !showFold }">
 		<div class=" flex justify-between flex-1 flex-wrap mr-8 items-start">
-			<NForm ref="nFormRef" :schema="schema" :form-options="formOptions"></NForm>
+			<slot name="left">
+				<NForm ref="nFormRef" :schema="schema" :form-options="formOptions"></NForm>
+			</slot>
 		</div>
 		<div class="flex flex-shrink-0 justify-end w-190px ">
 			<slot name="right"></slot>

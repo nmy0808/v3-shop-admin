@@ -11,7 +11,7 @@
 		<template #footer>
 			<slot name="footer">
 				<div style="flex: auto" v-if="showActionBtn">
-				<el-button @click="handleCancelClick" v-if="showCancelBtn">取消</el-button>
+				<el-button @click="handleCancelClick" v-if="showCancelBtn">{{cancelBtnText}}</el-button>
 				<el-button type="primary" @click="handleConfirmClick" :loading="loading" v-if="showConfirmBtn">
 					{{ confirmBtnText }}</el-button>
 			</div>
@@ -59,6 +59,10 @@ const props = defineProps({
 	confirmBtnText: {
 		type: String,
 		default: '确定'
+	},
+	cancelBtnText: {
+		type: String,
+		default: '取消'
 	},
 })
 
