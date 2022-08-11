@@ -1,6 +1,6 @@
 <template>
 	<NContainer>
-		<el-tabs v-model="listSearchParams.tab" type="card" tab-position="top" @tab-change="handleTabClick">
+		<el-tabs v-model="listSearchParams.tab" tab-position="top" @tab-change="handleTabClick">
 			<el-tab-pane v-for="(item, index) in tabOptions" :key="index" :label="item.label" :name="item.name" />
 		</el-tabs>
 
