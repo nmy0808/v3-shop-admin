@@ -5,8 +5,7 @@
 			:total="total" v-model:currentPage="pageSearch.page" v-model:pageSize="pageSearch.limit">
 			<!-- 会员 -->
 			<template #name="{ row }">
-				<div class="w-120 pl-6 py-4 border-l border-gray-300 border-dashed
-				 dark:border-red-500 ">
+				<div class="w-120 pl-6 py-4 ">
 					<div class="h-7 font-bold">
 						{{row.name}}
 					</div>
@@ -17,15 +16,15 @@
 			</template>
 			<!-- 状态 -->
 			<template #status="{ row }">
-				<el-tag 
+				<el-tag
 					v-if="row.status === 1"
-					type="" 
+					type=""
 					effect="light">
 					开启
 				</el-tag>
-				<el-tag 
+				<el-tag
 					v-else
-					type="info" 
+					type="info"
 					effect="light">
 					关闭
 				</el-tag>
@@ -59,7 +58,7 @@ const useUserList = () => {
 
 	const { loading, list, pageSearch, total, getListData, deleteData, statusData } =
 		usePageAction({
-			listDataApi: couponListApi, 
+			listDataApi: couponListApi,
 			deleteDataApi: couponDeleteApi,
 			statusDataApi: couponStatusApi
 		})

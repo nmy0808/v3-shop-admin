@@ -38,6 +38,7 @@ import NImageSelect from '@/components/nImageSelect/index.vue'
 import NDialog from '@/components/nDialog/index.vue'
 import NSelectImageDialog from '@/components/nSelectImageDialog/index.vue'
 import NUploadMultiple from '@/components/nUploadMultiple/index.vue'
+import NCountTo from '@/components/nCountTo/index.vue'
 
 import auth from './directives/auth'
 import role from './directives/role'
@@ -76,7 +77,7 @@ export default {
 		// app.component('scQrCode', scQrCode);
 		// app.component('scStatusIndicator', scStatusIndicator);
 		// app.component('scTrend', scTrend);
-		
+
 		app.component('NContainer', NContainer);
 		app.component('NIcon', NIcon);
 		app.component('NForm', NForm);
@@ -92,7 +93,8 @@ export default {
 		app.component('NDialog', NDialog);
 		app.component('NSelectImageDialog', NSelectImageDialog);
 		app.component('NUploadMultiple', NUploadMultiple);
-		
+		app.component('NCountTo', NCountTo);
+
 
 		//注册全局指令
 		app.directive('auth', auth)

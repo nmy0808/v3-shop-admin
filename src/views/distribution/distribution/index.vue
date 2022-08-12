@@ -1,5 +1,6 @@
 <template>
-	<el-row class="flex w-full px-4" >
+	<HeaderSkeleton v-if="statisticsLoading"></HeaderSkeleton>
+	<el-row v-else class="flex w-full px-4" >
 		<template v-for="(item, index) in statisticsData" :key="index">
 			<el-col :span="6">
 				<el-card shadow="never" class="!mb-0 mt-4 mr-5">
@@ -10,26 +11,13 @@
 							<NIcon :icon="item.icon" color="white" class="relative top-1px" :size="20"></NIcon>
 						</div>
 						<div class="ml-3">
-							<div class="font-bold text-xl">	{{item.value}}</div>
+							<div class="font-bold text-xl">	<NCountTo :duration="0.8" :value="item.value" :fixed="0"></NCountTo></div>
 							<div class="mt-1 opacity-60">	{{item.label}}</div>
 						</div>
 					</div>
 				</el-card>
 			</el-col>
 		</template>
-<!--
-		<el-col :span="6">
-			<el-card shadow="never" class="!mb-0 mt-4 mr-5">1
-			</el-card>
-		</el-col>
-			<el-col :span="6">
-			<el-card shadow="never" class="!mb-0 mt-4 mr-5">1
-			</el-card>
-		</el-col>
-			<el-col :span="6">
-			<el-card shadow="never" class="!mb-0 mt-4">1
-			</el-card>
-		</el-col> -->
 	</el-row>
 	<NContainer>
 		<el-form ref="formRef"  class="my-4" :model="listSearchParams" label-width="80px" size="small" inline @submit.prevent="handleSearch">
@@ -89,6 +77,7 @@ import { tableOptions } from './config/tableOptions'
 import { agentListApi, statisticsApi } from '@/api/model/agent'
 import PeopleDrawer from './components/PeopleDrawer.vue'
 import OrderDrawer from './components/OrderDrawer.vue'
+import HeaderSkeleton from './components/HeaderSkeleton.vue'
 import { usePageAction } from '@/hooks/usePageAction'
 import { notification, prompt, message as elMessage } from '@/libs/elementPlus'
 
@@ -180,9 +169,12 @@ getUserListData()
 
 const { peopleDrawerRef, handleCreate, handlePeopleList, orderDrawerRef, handleOrderList } = useAction()
 const statisticsData = ref([])
+const statisticsLoading = ref(false)
 const colors = [{bg: '#5E97F9', icon: 'User'},{bg: '#F38938', icon: 'Cellphone'}, {bg: '#47CE8D', icon: 'Money'},{bg:'#787BF7', icon: 'MessageBox'}]
 const getStatisticsData = async ()=>{
+	statisticsLoading.value = true
 	const {data} = await statisticsApi()
+	statisticsLoading.value = false
 	statisticsData.value = data.panels.map((it,index)=>{
 		return {
 			...it,

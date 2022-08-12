@@ -32,7 +32,6 @@
 				</div>
 			</el-card>
 			<span style="width: 300px" v-for="(item, index) in 4" :key="index"></span>
-			<!-- @size-change="handleSizeChange" @current-change="handleCurrentChange"  -->
 		</div>
 	</div>
 	<div class="page-wrap" v-if="!menusLoading">
@@ -51,17 +50,6 @@
 		<MenuRenameDrawer ref="menuRenameDrawerRef" />
 		<MenuImageDrawer ref="menuImageDrawerRef" :get-data="getImageListData" />
 	</div>
-	<!-- <template v-else>
-		<div class="flex">
-			<div>
-				<el-skeleton  animated :rows="5" class="w-70"></el-skeleton>
-			<el-skeleton  animated :rows="10" class="w-70 mt-5"></el-skeleton>
-			</div>
-			<div>
-				<el-skeleton  animated :rows="10" class="w-230 ml-20 mt-30"></el-skeleton>
-			</div>
-		</div>
-	</template> -->
 </template>
 
 <script setup>

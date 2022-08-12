@@ -1,14 +1,14 @@
 <template>
-	<NContainer>
+	<NContainer v-loading="loading">
 		<NActionHeader @create="handleCreate" @refresh="getListData" />
 		<el-tree :data="list" :props="{ label: 'name', value: 'id' }">
 			<template #default="{ data }">
-				<div class="flex justify-between w-full text-xl">
+				<div class="flex justify-between w-full text-base">
 					<div>{{ data.name }}</div>
 					<div class="flex w-220px justify-between">
 						<el-button class="" type="primary" link size="small" @click="handleRecommend(data)">推荐产品</el-button>
-						<el-switch v-model="data.status" 
-							:active-value="1" :inactive-value="0" size="small" 
+						<el-switch v-model="data.status"
+							:active-value="1" :inactive-value="0" size="small"
 							@click="handleStatusChange(data)"
 							/>
 						<el-button type="primary" link size="small" @click="handleEdit(data)">修改</el-button>
