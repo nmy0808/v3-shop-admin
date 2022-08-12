@@ -7,7 +7,7 @@ import tool from "@/utils/tool";
 import systemRouter from "./systemRouter";
 import userRoutes from "@/config/route";
 import { beforeEach, afterEach } from "./scrollBehavior";
-
+import store from '@/store/'
 //系统路由
 const routes = systemRouter;
 
@@ -74,9 +74,10 @@ router.beforeEach(async (to, from, next) => {
 		// 	return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
 		// })
 		const menu = [...userRoutes, ...getAsyncMenus()];
-		console.log(menu, "??");
 		var menuRouter = filterAsyncRouter(menu);
 		menuRouter = flatAsyncRoutes(menuRouter);
+		store.commit('SET_MENUS', menuRouter)
+		// tool.data.set("MENU1", JSON.stringify(menuRouter))
 		menuRouter.forEach((item) => {
 			router.addRoute("layout", item);
 		});

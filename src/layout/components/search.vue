@@ -31,7 +31,8 @@
 		mounted() {
 			var searchHistory = this.$TOOL.data.get("SEARCH_HISTORY") || []
 			this.history = searchHistory
-			var menuTree = this.$TOOL.data.get("MENU")
+			// var menuTree = this.$TOOL.data.get("MENU")
+			var menuTree = this.$store.state.menus.menus
 			this.filterMenu(menuTree)
 			this.$refs.input.focus()
 		},
@@ -45,7 +46,7 @@
 			},
 			filterMenu(map){
 				map.forEach(item => {
-					if(item.meta.hidden || item.meta.type=="button"){
+					if(item?.meta?.hidden || item?.meta?.type=="button"){
 						return false
 					}
 					if(item.meta.type=='iframe'){

@@ -6,11 +6,11 @@
 		<div class="screen panel-item hidden-sm-and-down" @click="screen">
 			<el-icon><el-icon-full-screen /></el-icon>
 		</div>
-		<div class="tasks panel-item" @click="tasks">
+		<!-- <div class="tasks panel-item" @click="tasks">
 			<el-icon><el-icon-sort /></el-icon>
-		</div>
+		</div> -->
 		<div class="msg panel-item" @click="showMsg">
-			<el-badge :hidden="msgList.length==0" :value="msgList.length" class="badge" type="danger">
+			<el-badge :hidden="msgList.length==0" :value="0" class="badge" type="danger">
 				<el-icon><el-icon-chat-dot-round /></el-icon>
 			</el-badge>
 			<el-drawer title="新消息" v-model="msg" :size="400" append-to-body destroy-on-close>
@@ -18,7 +18,7 @@
 					<el-main class="nopadding">
 						<el-scrollbar>
 							<ul class="msg-list">
-								<li v-for="item in msgList" v-bind:key="item.id">
+								<!-- <li v-for="item in msgList" v-bind:key="item.id">
 									<a :href="item.link" target="_blank">
 										<div class="msg-list__icon">
 											<el-badge is-dot type="danger">
@@ -33,8 +33,8 @@
 											<p>{{item.time}}</p>
 										</div>
 									</a>
-								</li>
-								<el-empty v-if="msgList.length==0" description="暂无新消息" :image-size="100"></el-empty>
+								</li> -->
+								<el-empty  description="暂无新消息" :image-size="100"></el-empty>
 							</ul>
 						</el-scrollbar>
 					</el-main>
