@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkscui"]=self["webpackChunkscui"]||[]).push([[360],{78841:function(n,i,e){e.r(i),e.d(i,{tableOptions:function(){return l}});var t=e(2262);const l=(0,t.iH)([{label:"ID",prop:"id",width:"100px",align:"center"},{label:"商品封面",slot:"info",align:""}])}}]);

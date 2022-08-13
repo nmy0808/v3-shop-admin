@@ -142,7 +142,7 @@ import ScEcharts from "@/components/scEcharts/index.vue";
 import { menus as menusOptions } from "./config";
 import Skeleton from './components/Skeleton.vue'
 
-const loading = ref(false);
+const loading = ref(true);
 const panelsInfo = ref([]);
 const shopAndGoodsInfo = ref([]);
 const orderInfo = ref({});
@@ -178,7 +178,8 @@ const currentOrderType = ref("month");
 const orderInfoLoading = ref(false)
 
 const statistics1InfoData = async () => {
-  panelsInfo.value = (await statistics1InfoApi()).data.panels;
+	const titles = ['支付订单','订单量','销售额', '新增用户']
+  panelsInfo.value = (await statistics1InfoApi()).data.panels.map((it,index)=> ({...it, title: titles[index]}))
 };
 const statistics1Info2Data = async () => {
   shopAndGoodsInfo.value = (await statistics2InfoApi()).data;
@@ -214,4 +215,15 @@ const getData = async () => {
 getData();
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.placeholder {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width:200px;
+	height: 200px;
+	// background: #f7f9fe;
+	color: var(--el-color-primary);
+	// opacity: 0.3;
+}
+</style>

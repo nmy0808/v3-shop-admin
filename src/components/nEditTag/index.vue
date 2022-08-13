@@ -28,7 +28,6 @@ const InputRef = ref()
 
 watch(() => props.modelValue, () => {
 	dynamicTags.value = cloneDeep(props.modelValue)
-	console.log(1)
 }, { immediate: true })
 
 

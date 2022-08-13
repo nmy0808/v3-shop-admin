@@ -12,6 +12,7 @@ export default {
 		layoutTags: config.LAYOUT_TAGS,
 		//主题
 		theme: config.THEME,
+		// theme: 'dark',
 	},
 	mutations: {
 		SET_ismobile(state, key){

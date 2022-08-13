@@ -181,7 +181,6 @@ const getStatisticsData = async ()=>{
 			...colors[index]
 		}
 	})
-	console.log(data)
 }
 
 getStatisticsData()

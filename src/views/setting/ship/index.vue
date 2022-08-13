@@ -33,7 +33,6 @@ const getData = async () => {
 getData()
 
 const handleReset = ()=>{
-	console.log(currentDataCopy)
 currentData.value = currentDataCopy
 }
 const handleSubmit = (e) => {

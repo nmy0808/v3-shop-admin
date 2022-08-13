@@ -12,20 +12,22 @@
 			<el-col :span="12">
 				<el-checkbox :label="$t('login.rememberMe')" v-model="form.autologin"></el-checkbox>
 			</el-col>
-			<el-col :span="12" class="login-forgot">
+			<!-- 忘记密码 -->
+			<!-- <el-col :span="12" class="login-forgot">
 				<router-link to="/reset_password">{{ $t("login.forgetPassword") }}？</router-link>
-			</el-col>
+			</el-col> -->
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" style="width: 100%" :loading="islogin" round @click="login">{{ $t("login.signIn") }}
 			</el-button>
 		</el-form-item>
-		<div class="login-reg">
+		<!-- 注册 -->
+		<!-- <div class="login-reg">
 			{{ $t("login.noAccount") }}
 			<router-link to="/user_register">{{
 					$t("login.createAccount")
 			}}</router-link>
-		</div>
+		</div> -->
 	</el-form>
 </template>
 

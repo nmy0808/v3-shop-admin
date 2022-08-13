@@ -89,7 +89,6 @@ const listSearchParams = ref({
 
 
 const open = ({ title, data }) => {
-	console.log(data, "daa")
 	currentTitle.value = title
 	listSearchParams.value.id = data.id
 	currentEditData = data

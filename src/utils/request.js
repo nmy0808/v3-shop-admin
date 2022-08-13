@@ -3,7 +3,7 @@ import { ElNotification, ElMessageBox } from 'element-plus';
 import sysConfig from "@/config";
 import tool from '@/utils/tool';
 import router from '@/router';
-
+import { formatData } from './mock';
 axios.defaults.baseURL = ''
 
 axios.defaults.timeout = sysConfig.TIMEOUT
@@ -30,6 +30,12 @@ axios.interceptors.request.use(
 // HTTP response 拦截器
 axios.interceptors.response.use(
 	(response) => {
+		if(response.data){
+			formatData(response.data)
+			// console.log(response.data, "??")
+			// deepFind(response.data, 'cover','https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/public/5984928facd569ef906becba3469810b.png' )
+			// deepFind(response.data, 'url','https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/public/5984928facd569ef906becba3469810b.png' )
+		}
 		return response;
 	},
 	(error) => {
@@ -204,3 +210,21 @@ var http = {
 }
 
 export default http;
+
+function deepFind(obj, key, value) {
+		const keys = Object.keys(obj)
+		keys.forEach(k => {
+			const v = obj[k]
+			if (typeof v === 'object' && !Array.isArray(obj) && v!==null) {
+				deepFind(v, key, value)
+			}
+			if (Array.isArray(obj)&& v!==null) {
+				for (let i = 0; i < obj.length; i++) {
+					deepFind(obj[i], key, value)
+				}
+			}
+			if (k === key) {
+				obj[k] = value
+			}
+		})
+}

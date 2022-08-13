@@ -22,12 +22,12 @@
 			<template #goods-info="{ row }">
 				<div class="flex items-center">
 					<div>
-						<div class="w-20 inline-block">订单号:</div>
+						<div class="w-20 inline-block opacity-60">订单号:</div>
 						<div>{{ row.no }}</div>
 					</div>
 					<el-divider class="mx-6" direction="vertical"></el-divider>
 					<div>
-						<div class="w-20 inline-block">下单时间:</div>
+						<div class="w-20 inline-block opacity-60">下单时间:</div>
 						<div>{{ row.create_time }}</div>
 					</div>
 				</div>

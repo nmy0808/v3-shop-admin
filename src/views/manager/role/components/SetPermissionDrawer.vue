@@ -38,7 +38,6 @@ const props = defineProps({
 })
 
 const height = computed(()=>{
-	console.log('w')
 	return window.innerHeight
 })
 

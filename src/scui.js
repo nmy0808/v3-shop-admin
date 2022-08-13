@@ -18,7 +18,7 @@ import { permission, rolePermission } from './utils/permission'
 // import scForm from './components/scForm'
 // import scTitle from './components/scTitle'
 // import scWaterMark from './components/scWaterMark'
-// import scQrCode from './components/scQrCode'
+import scQrCode from './components/scQrCode'
 
 // import scStatusIndicator from './components/scMini/scStatusIndicator'
 // import scTrend from './components/scMini/scTrend'
@@ -74,7 +74,7 @@ export default {
 		// app.component('scForm', scForm);
 		// app.component('scTitle', scTitle);
 		// app.component('scWaterMark', scWaterMark);
-		// app.component('scQrCode', scQrCode);
+		app.component('scQrCode', scQrCode);
 		// app.component('scStatusIndicator', scStatusIndicator);
 		// app.component('scTrend', scTrend);
 

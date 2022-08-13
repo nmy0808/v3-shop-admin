@@ -6,6 +6,8 @@ import store from './store'
 import { createApp } from 'vue'
 import App from './App.vue'
 import 'windi.css'
+import findKey from 'lodash/findKey'
+
 const app = createApp(App);
 
 app.use(store);

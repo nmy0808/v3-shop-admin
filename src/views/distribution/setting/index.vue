@@ -1,7 +1,7 @@
 <template>
 	<NContainer v-loading="loading">
 		<el-form ref="formRef" :model="formData" label-width="140px" size="default" @submit.prevent="handleSubmit">
-			<div class="p-4 bg-gray-100 text-14px rounded-2px mb-4">基础设置</div>
+			<div class="p-4 bg-gray-100 dark:bg-black/30 text-14px rounded-2px mb-4">基础设置</div>
 			<el-form-item label="分销启用" prop="distribution_open">
 				<el-radio-group v-model="formData.distribution_open">
 					<el-radio :label="1">是</el-radio>
@@ -14,7 +14,7 @@
 				<!-- <NSelectImageDialog ref="imageSelectRef"></NSelectImageDialog> -->
 				<NUploadMultiple v-model="formData.spread_banners" :customUpload="customUpload" :maxNum="5"></NUploadMultiple>
 			</el-form-item>
-			<div class="p-4 bg-gray-100 text-14px rounded-2px mb-4">返佣设置</div>
+			<div class="p-4 bg-gray-100 dark:bg-black/30  text-14px rounded-2px mb-4">返佣设置</div>
 			<el-form-item label="一级返佣比例" prop="store_first_rebate">
 				<el-input type="number" class="w-130px" v-model="formData.store_first_rebate" placeholder="">
 					<template #append>%</template>
@@ -34,7 +34,7 @@
 				</el-radio-group>
 			</el-form-item>
 			<div class="text-sm opacity-50 ml-46 mb-10 -mt-3">是否开启自购返佣（开启：分销员自己购买商品，享受一级返佣，上级享受二级返佣； 关闭：分销员自己购买商品没有返佣）</div>
-			<div class="p-4 bg-gray-100 text-14px rounded-2px mb-4">结算设置</div>
+			<div class="p-4 bg-gray-100 dark:bg-black/30  text-14px rounded-2px mb-4">结算设置</div>
 			<el-form-item label="结算时间" prop="settlement_days">
 				<el-input type="number" class="w-240px" v-model="formData.settlement_days" placeholder="">
 					<template #prepend>订单完成后</template>

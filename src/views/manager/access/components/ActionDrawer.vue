@@ -28,7 +28,11 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="菜单图标" prop="icon" v-if="formData.menu === 1">
+
+				<el-form-item label="菜单图标" prop="icon">
+					<el-input v-model="formData.icon"></el-input>
+				</el-form-item>
+			<!-- <el-form-item label="菜单图标" prop="icon" v-if="formData.menu === 1">
 				<el-select v-model="formData.icon" filterable placeholder="请选择菜单图标">
 					<el-option v-for="item in iconOptions" :key="item.label" :label="item.label" :value="item.value">
 						<div>
@@ -42,7 +46,7 @@
 				<el-icon size="22" class="ml-2">
 					<Component :is="`el-icon-${formData.icon}`"></Component>
 				</el-icon>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item v-if="formData.menu === 1" label="前端路由规则" prop="frontpath">
 				<el-input v-model="formData.frontpath" placeholder="请输入前端路由规则"></el-input>
 			</el-form-item>
@@ -56,7 +60,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { ruleCreateApi, ruleUpdateApi } from '@/api/model/rule'
-import * as elIcons from '@element-plus/icons-vue'
+// import * as elIcons from '@element-plus/icons-vue'
 import { notification } from '@/libs/elementPlus/index.js';
 import { menuRules, ruleRules } from './config/actionRule'
 import cloneDeep from 'lodash/cloneDeep'
@@ -73,9 +77,9 @@ const props = defineProps({
 })
 const iconOptions = ref([])
 //统一注册el-icon图标
-for (let icon in elIcons) {
-	iconOptions.value.push({ label: icon, value: icon })
-}
+// for (let icon in elIcons) {
+// 	iconOptions.value.push({ label: icon, value: icon })
+// }
 
 const formData = ref({
 	rule_id: null,
@@ -148,6 +152,7 @@ const open = ({ title, data }) => {
 		const tempData = { ...cloneDeep(data), child: undefined }
 		formData.value = { ...formData.value, ...tempData }
 	}
+	console.log(2)
 	isVisible.value = true
 }
 const handleCancel = () => {

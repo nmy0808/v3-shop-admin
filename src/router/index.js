@@ -7,7 +7,8 @@ import tool from "@/utils/tool";
 import systemRouter from "./systemRouter";
 import userRoutes from "@/config/route";
 import { beforeEach, afterEach } from "./scrollBehavior";
-import store from '@/store/'
+import store from "@/store/";
+import { defineAsyncComponent } from "vue";
 //系统路由
 const routes = systemRouter;
 
@@ -76,7 +77,7 @@ router.beforeEach(async (to, from, next) => {
 		const menu = [...userRoutes, ...getAsyncMenus()];
 		var menuRouter = filterAsyncRouter(menu);
 		menuRouter = flatAsyncRoutes(menuRouter);
-		store.commit('SET_MENUS', menuRouter)
+		store.commit("SET_MENUS", menuRouter);
 		// tool.data.set("MENU1", JSON.stringify(menuRouter))
 		menuRouter.forEach((item) => {
 			router.addRoute("layout", item);
@@ -144,8 +145,9 @@ function filterAsyncRouter(routerMap) {
 }
 function loadComponent(component) {
 	if (component) {
-		return () =>
-			import(/* webpackChunkName: "[request]" */ `@/views/${component}`);
+		return defineAsyncComponent(
+			()=>import(/* webpackChunkName: "[request]" */ `@/views/${component}`)
+		);
 	} else {
 		return () => import(`@/layout/other/empty`);
 	}
